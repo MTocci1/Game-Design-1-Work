@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
 using namespace sf;
+using namespace std;
+
 
 int main()
 {
@@ -28,11 +30,15 @@ int main()
 	textureBee.loadFromFile("graphics/bee.png");
 	Sprite spriteBee;
 	spriteBee.setTexture(textureBee);
-	spriteBee.setPosition(30, 30);
-	//Is the bee currently moving?
-	bool beeActive = false;
-	//How fast can the bee fly
-	float beeSpeed = 0.0f;
+	// Center of the circle around which the bee will move
+	float circleCenterX = 450.0f;
+	float circleCenterY = 450.0f; 
+	float radius = 200.0f; 
+	// Set the initial angle
+	float angle = 0.0f;
+
+	// Set bee position to the center of the circle
+	spriteBee.setPosition(circleCenterX, circleCenterY);
 
 	// Create a view with a size of 1024x1024 to match the background
 	View view(Vector2f(512, 512), Vector2f(1024, 1024));
@@ -54,6 +60,14 @@ int main()
 		Update the scene
 		*****************************************
 		*/
+
+		// Update the bee's position to move in a circle
+		float beeX = circleCenterX + radius * std::cos(angle);
+		float beeY = circleCenterY + radius * std::sin(angle);
+		spriteBee.setPosition(beeX, beeY);
+
+		// Increase the angle to make the bee move clockwise
+		angle += 0.01f;
 
 
 		/*
