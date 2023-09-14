@@ -4,13 +4,16 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
-using namespace std;
+using namespace std; // imports all symbols from the std namespace into the global namespace
 using namespace sf;
 
 int main()
 {
+	// << is called the stream insertion operator
+	// >> is call the stream extraction operator
 	cout << "Hello, World!" << endl;
 
+	// RenderWindow constructor takes 3 arguments - VideoMode, string, Style
 	RenderWindow window({ 500,250 }, "Lab 1", Style::Default);
 
 	Font font;
