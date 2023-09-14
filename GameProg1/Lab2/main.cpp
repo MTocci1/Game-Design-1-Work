@@ -2,6 +2,8 @@
 using namespace sf;
 using namespace std;
 
+// Define an enum class for direction
+enum class Direction { Clockwise, CounterClockwise};
 
 int main()
 {
@@ -44,6 +46,11 @@ int main()
 	View view(Vector2f(512, 512), Vector2f(1024, 1024));
 	window.setView(view);
 
+	// Initialize the direction to clockwise
+	Direction movementDirection = Direction::Clockwise;
+
+	bool acceptInput = false;
+
 	while (window.isOpen())
 	{
 		/*
@@ -51,9 +58,37 @@ int main()
 		Handle players input
 		******************************************
 		*/
+		
+		// Ensure the user has released the spacebar
+		Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == Event::KeyReleased)
+			{
+				// Listen for key presses again
+				acceptInput = true;
+			}
+		}
 		if (Keyboard::isKeyPressed(Keyboard::Escape))
 		{
 			window.close();
+		}
+		// Make sure we are accepting input
+		if (acceptInput)
+		{
+			if (Keyboard::isKeyPressed(Keyboard::Space))
+			{
+				if (movementDirection == Direction::Clockwise)
+				{
+					movementDirection = Direction::CounterClockwise;
+					acceptInput = false;
+				}
+				else
+				{
+					movementDirection = Direction::Clockwise;
+					acceptInput = false;
+				}
+			}
 		}
 		/*
 		*****************************************
@@ -61,14 +96,25 @@ int main()
 		*****************************************
 		*/
 
-		// Update the bee's position to move in a circle
-		float beeX = circleCenterX + radius * std::cos(angle);
-		float beeY = circleCenterY + radius * std::sin(angle);
+		float beeX;
+		float beeY;
+
+		if (movementDirection == Direction::Clockwise)
+		{
+			// Move the bee in a clockwise direction
+			beeX = circleCenterX + radius * std::cos(angle);
+			beeY = circleCenterY + radius * std::sin(angle);
+			angle += 0.01f;
+		}
+		else
+		{
+			// Move the bee in a counter-clockwise direction, set the angle to negative
+			beeX = circleCenterX + radius * std::cos(-angle);
+			beeY = circleCenterY + radius * std::sin(-angle);
+			angle += 0.01f;
+		}
+
 		spriteBee.setPosition(beeX, beeY);
-
-		// Increase the angle to make the bee move clockwise
-		angle += 0.01f;
-
 
 		/*
 		*****************************************
