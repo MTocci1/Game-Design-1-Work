@@ -173,6 +173,30 @@ int main()
 	ootBuffer.loadFromFile("sound/out_of_time.wav");
 	Sound outOfTime;
 	outOfTime.setBuffer(ootBuffer);
+
+	// Variables for invincibility ability
+	bool isInvincible = false;
+	float invincibilityDuration = 5.0f;
+	float invincibilityCooldown = 30.0f;
+	float invincibilityTimer = 0.0f;
+	bool canUseInvincibility = true;
+	
+	// Display the invinsibility timers
+	Text invincibilityTimerText;
+	Text invincibilityCooldownText;
+
+	invincibilityTimerText.setFont(font);
+	invincibilityCooldownText.setFont(font);
+
+	invincibilityTimerText.setCharacterSize(40);
+	invincibilityCooldownText.setCharacterSize(40);
+
+	invincibilityTimerText.setFillColor(Color::White);
+	invincibilityCooldownText.setFillColor(Color::White);
+
+	invincibilityTimerText.setPosition(1300, 20);
+	invincibilityCooldownText.setPosition(1500, 60);
+
 	while (window.isOpen())
 	{
 		/*
@@ -203,6 +227,13 @@ int main()
 			// Reset the time and the score
 			score = 0;
 			timeRemaining = 6;
+
+			// Reset invincibility timer and cooldown
+			canUseInvincibility = true;
+			invincibilityTimer = 0.0f;
+			invincibilityCooldown = 30.0f;
+
+
 			// Make all the branches disappear -
 			// starting in the second position
 			for (int i = 1; i < NUM_BRANCHES; i++)
@@ -261,7 +292,14 @@ int main()
 				logActive = true;
 				acceptInput = false;
 			}
+			// Activate invincibility
+			if (canUseInvincibility && Keyboard::isKeyPressed(Keyboard::Space)) {
+				isInvincible = true;
+				invincibilityTimer = invincibilityDuration;
+				canUseInvincibility = false;
+			}
 		}
+
 		/*
 		*****************************************
 		Update the scene
@@ -280,7 +318,7 @@ int main()
 
 				//Pause the game
 				paused = true;
-				// Change the message shown to th	e player
+				// Change the message shown to the player
 					messageText.setString("Out of time!");
 				// Reposition the text based on its new size
 				FloatRect textRect = messageText.getLocalBounds();
@@ -292,6 +330,25 @@ int main()
 				// Play the out of time sound
 				outOfTime.play();
 			}
+
+			// Update invincibility timer
+			if (isInvincible) {
+				invincibilityTimer -= dt.asSeconds();
+				// If timer reaches 0 player is no longer invinsible
+				if (invincibilityTimer <= 0.0f) {
+					isInvincible = false;
+				}
+			}
+			// Update invincibility cooldown time
+			else if (!canUseInvincibility) {
+				invincibilityCooldown -= dt.asSeconds();
+				// If cooldown reaches 0 allow user to use ability again
+				if (invincibilityCooldown <= 0.0f) {
+					canUseInvincibility = true;
+					invincibilityCooldown = 30.0f;
+				}
+			}
+			
 			// Setup the bee
 			if (!beeActive)
 			{
@@ -397,6 +454,17 @@ int main()
 			std::stringstream ss;
 			ss << "Score = " << score;
 			scoreText.setString(ss.str());
+
+			// Update the invinsibility timer and cooldown text
+			std::stringstream timerText;
+			timerText << "Invincibility Timer: " << static_cast<int>(invincibilityTimer) << "s";
+
+			std::ostringstream cooldownText;
+			cooldownText << "Cooldown: " << static_cast<int>(invincibilityCooldown) << "s";
+
+			invincibilityTimerText.setString(timerText.str());
+			invincibilityCooldownText.setString(cooldownText.str());
+
 			// update the branch sprites
 			for (int i = 0; i < NUM_BRANCHES; i++) {
 				float height = i * 150;
@@ -439,11 +507,14 @@ int main()
 				}
 			}
 			// has the player been squished by a branch?
-			if (branchPositions[5] == playerSide)
+			if (!isInvincible && branchPositions[5] == playerSide)
 			{
 				// death
 				paused = true;
 				acceptInput = false;
+				canUseInvincibility = true;
+				invincibilityTimer = 0.0f;
+				invincibilityCooldown = 30.0f;
 
 				// Draw the gravestone
 				spriteRIP.setPosition(525, 760);
@@ -493,6 +564,9 @@ int main()
 		window.draw(spriteBee);
 		// Draw the score
 		window.draw(scoreText);
+		// Draw the invinibility timers
+		window.draw(invincibilityTimerText);
+		window.draw(invincibilityCooldownText);
 		// Draw the timebar
 		window.draw(timeBar);
 		if (paused)
