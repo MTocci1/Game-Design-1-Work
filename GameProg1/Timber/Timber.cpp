@@ -6,7 +6,7 @@
 using namespace sf;
 // This is where our game starts from
 // Function declaration
-void updateBranches(int seed);
+void updateBranches(int seed, int deathsUnder10Seconds, int deathsOver10Seconds);
 const int NUM_BRANCHES = 6;
 Sprite branches[NUM_BRANCHES];
 // Where is the player/branch?
@@ -197,6 +197,11 @@ int main()
 	invincibilityTimerText.setPosition(1300, 20);
 	invincibilityCooldownText.setPosition(1500, 60);
 
+	// Variables for dynamic difficulty
+	float playerAliveTime = 0.0f;
+	int deathsUnder10Seconds = 0;
+	int deathsOver10Seconds = 0;
+
 	while (window.isOpen())
 	{
 		/*
@@ -263,7 +268,7 @@ int main()
 					spriteAxe.getPosition().y);
 				spritePlayer.setPosition(1200, 720);
 				// Update the branches
-				updateBranches(score);
+				updateBranches(score, deathsUnder10Seconds, deathsOver10Seconds);
 
 				// Set the log flying to the left
 				spriteLog.setPosition(810, 720);
@@ -285,7 +290,7 @@ int main()
 					spriteAxe.getPosition().y);
 				spritePlayer.setPosition(580, 720);
 				// update the branches
-				updateBranches(score);
+				updateBranches(score, deathsUnder10Seconds, deathsOver10Seconds);
 				// set the log flying
 				spriteLog.setPosition(810, 720);
 				logSpeedX = 5000;
@@ -311,10 +316,16 @@ int main()
 			Time dt = clock.restart();
 			// Subtract from the amount of time remaining
 			timeRemaining -= dt.asSeconds();
+
+			// Keep track of how long the player is alive
+			playerAliveTime += dt.asSeconds();
+
 			// Size up the time bar
 			timeBar.setSize(Vector2f(timeBarWidthPerSecond *
 				timeRemaining, timeBarHeight));
 			if (timeRemaining <= 0.0f) {
+				// Since player didn't die, increase the difficulty
+				deathsOver10Seconds ++;
 
 				//Pause the game
 				paused = true;
@@ -516,6 +527,19 @@ int main()
 				invincibilityTimer = 0.0f;
 				invincibilityCooldown = 30.0f;
 
+
+				// If player lived more than 10 seconds increase the difficulty
+				if (playerAliveTime >= 10.0f) {
+					deathsOver10Seconds ++;
+					playerAliveTime = 0;
+				}
+				// If not, decrease difficulty
+				else {
+					deathsUnder10Seconds ++;
+					playerAliveTime = 0;
+
+				}
+
 				// Draw the gravestone
 				spriteRIP.setPosition(525, 760);
 				// hide the player
@@ -579,26 +603,58 @@ int main()
 	}
 	return 0;
 }
-// Function definition
-void updateBranches(int seed)
+// update the branches, also take into account player performance
+void updateBranches(int seed, int deathsUnder10Seconds, int deathsOver10Seconds)
 {
+	// Calculate the difference in deaths to adjust the probability of NONE
+	int deathDifference = deathsUnder10Seconds - deathsOver10Seconds;
+
+	// Set the default probability of no branches
+	float noneProbability = 0.2f;
+
+	if (deathDifference >= 0) {
+		// Increase probability when deathDifference is positive
+		noneProbability += 0.1f * deathDifference; 
+	}
+	else {
+		// Decrease probability when deathDifference is negative
+		noneProbability -= 0.1f * abs(deathDifference); 
+	}
+
+	// Ensure noneProbability does not exceed 80%
+	noneProbability = std::min(0.8f, noneProbability);
+	
+	// Ensure probability stays within bounds (0 to 1)
+	noneProbability = std::max(0.0f, std::min(1.0f, noneProbability));
+
 	// Move all the branches down one place
-	for (int j = NUM_BRANCHES - 1; j > 0; j--) {
+	for (int j = NUM_BRANCHES - 1; j > 0; j--)
+	{
 		branchPositions[j] = branchPositions[j - 1];
 	}
+
 	// Spawn a new branch at position 0
-	// Left, Right or None
+	// Left, Right, or None
 	srand((int)time(0) + seed);
-	int r = (rand() % 5);
-	switch (r) {
-	case 0:
-		branchPositions[0] = side::LEFT;
-		break;
-	case 1:
-		branchPositions[0] = side::RIGHT;
-		break;
-	case 2:
+	// Random value between 0 and 1
+	float r = (rand() % 100) / 100.0f; 
+
+	if (r < noneProbability)
+	{
 		branchPositions[0] = side::NONE;
-		break;
+	}
+	else
+	{
+		// Randomly choose between Left and Right
+		srand((int)time(0) + seed);
+		int randomValue = rand() % 2;
+		if (randomValue == 0)
+		{
+			branchPositions[0] = side::LEFT;
+		}
+		else
+		{
+			branchPositions[0] = side::RIGHT;
+		}
 	}
 }
