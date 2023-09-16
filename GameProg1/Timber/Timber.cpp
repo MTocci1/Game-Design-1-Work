@@ -11,7 +11,7 @@ const int NUM_BRANCHES = 6;
 Sprite branches[NUM_BRANCHES];
 // Where is the player/branch?
 // left or right?
-enum class side { LEFT, RIGHT, NONE };
+enum class side { LEFT, RIGHT, MIDDLE, NONE };
 side branchPositions[NUM_BRANCHES];
 int main()
 {
@@ -142,9 +142,12 @@ int main()
 	Sprite spriteAxe;
 	spriteAxe.setTexture(textureAxe);
 	spriteAxe.setPosition(700, 830);
+
 	// Line the axe up with the tree
 	const float AXE_POSITION_LEFT = 700;
 	const float AXE_POSITION_RIGHT = 1075;
+	const float AXE_POSITION_MIDDLE = 887.5;
+
 	// Prepare the flying log
 	Texture textureLog;
 	textureLog.loadFromFile("graphics/log.png");
@@ -209,6 +212,7 @@ int main()
 		Handle players input
 		******************************************
 		*/
+		// Start the game
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -225,7 +229,6 @@ int main()
 		{
 			window.close();
 		}
-		// Start the game
 		if (Keyboard::isKeyPressed(Keyboard::Return)) 
 		{
 			paused = false;
@@ -296,6 +299,33 @@ int main()
 				logSpeedX = 5000;
 				logActive = true;
 				acceptInput = false;
+				// Play a chop sound
+				chop.play();
+			}
+
+			// Added Middle position for the player
+			// Handle pressing the down arrow key
+			if (Keyboard::isKeyPressed(Keyboard::Down))
+			{
+				// Make sure the player is on the right
+				playerSide = side::MIDDLE;
+
+				score++;
+				// Add to the amount of time remaining
+				timeRemaining += (2 / score) + .15;
+				spriteAxe.setPosition(AXE_POSITION_MIDDLE,
+					spriteAxe.getPosition().y);
+				spritePlayer.setPosition(960, 720);
+				// Update the branches
+				updateBranches(score, deathsUnder10Seconds, deathsOver10Seconds);
+
+				// Set the log flying to the left
+				spriteLog.setPosition(810, 720);
+				logSpeedX = -5000;
+				logActive = true;
+				acceptInput = false;
+				// Play a chop sound
+				chop.play();
 			}
 			// Activate invincibility
 			if (canUseInvincibility && Keyboard::isKeyPressed(Keyboard::Space)) {
@@ -485,6 +515,8 @@ int main()
 					branches[i].setPosition(610, height);
 					// Flip the sprite round the other way
 					branches[i].setRotation(180);
+					// Scale to normal size
+					branches[i].setScale(1.0f, 1.0f);
 				}
 				else if (branchPositions[i] == side::RIGHT)
 				{
@@ -492,6 +524,16 @@ int main()
 					branches[i].setPosition(1330, height);
 					// Set the sprite rotation to normal
 					branches[i].setRotation(0);
+					branches[i].setScale(1.0f, 1.0f);
+				}
+				else if (branchPositions[i] == side::MIDDLE)
+				{
+					// Move the sprite to the middle
+					branches[i].setPosition(1020, height);
+					// Set the sprite rotation to normal
+					branches[i].setRotation(30);
+					// Scale down so it stays in middle
+					branches[i].setScale(0.5f, 0.5f);
 				}
 				else
 				{
@@ -570,12 +612,12 @@ int main()
 		window.draw(spriteCloud1);
 		window.draw(spriteCloud2);
 		window.draw(spriteCloud3);
+		// Draw the tree
+		window.draw(spriteTree);
 		//Draw the branches
 		for (int i = 0; i < NUM_BRANCHES; i++) {
 			window.draw(branches[i]);
 		}
-		// Draw the tree
-		window.draw(spriteTree);
 		// Draw the player
 		window.draw(spritePlayer);
 		// Draw the axe
@@ -612,13 +654,15 @@ void updateBranches(int seed, int deathsUnder10Seconds, int deathsOver10Seconds)
 	// Set the default probability of no branches
 	float noneProbability = 0.2f;
 
-	if (deathDifference >= 0) {
+	if (deathDifference >= 0)
+	{
 		// Increase probability when deathDifference is positive
-		noneProbability += 0.1f * deathDifference; 
+		noneProbability += 0.1f * deathDifference;
 	}
-	else {
+	else
+	{
 		// Decrease probability when deathDifference is negative
-		noneProbability -= 0.1f * abs(deathDifference); 
+		noneProbability -= 0.1f * abs(deathDifference);
 	}
 
 	// Ensure noneProbability does not exceed 80%
@@ -626,7 +670,7 @@ void updateBranches(int seed, int deathsUnder10Seconds, int deathsOver10Seconds)
 
 	// Ensure noneProbability does not go below 0%
 	noneProbability = std::max(0.0f, noneProbability);
-	
+
 	// Ensure probability stays within bounds (0 to 1)
 	noneProbability = std::max(0.0f, std::min(1.0f, noneProbability));
 
@@ -637,10 +681,9 @@ void updateBranches(int seed, int deathsUnder10Seconds, int deathsOver10Seconds)
 	}
 
 	// Spawn a new branch at position 0
-	// Left, Right, or None
+	// Left, Right, Middle, or None
 	srand((int)time(0) + seed);
-	// Random value between 0 and 1
-	float r = (rand() % 100) / 100.0f; 
+	float r = (rand() % 100) / 100.0f;
 
 	if (r < noneProbability)
 	{
@@ -648,16 +691,20 @@ void updateBranches(int seed, int deathsUnder10Seconds, int deathsOver10Seconds)
 	}
 	else
 	{
-		// Randomly choose between Left and Right
 		srand((int)time(0) + seed);
-		int randomValue = rand() % 2;
+		int randomValue = rand() % 3;
 		if (randomValue == 0)
 		{
 			branchPositions[0] = side::LEFT;
 		}
-		else
+		else if (randomValue == 1)
 		{
 			branchPositions[0] = side::RIGHT;
+		}
+		// Added MIDDLE position for branch
+		else
+		{
+			branchPositions[0] = side::MIDDLE;
 		}
 	}
 }
