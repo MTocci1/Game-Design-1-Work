@@ -623,6 +623,9 @@ void updateBranches(int seed, int deathsUnder10Seconds, int deathsOver10Seconds)
 
 	// Ensure noneProbability does not exceed 80%
 	noneProbability = std::min(0.8f, noneProbability);
+
+	// Ensure noneProbability does not go below 0%
+	noneProbability = std::max(0.0f, noneProbability);
 	
 	// Ensure probability stays within bounds (0 to 1)
 	noneProbability = std::max(0.0f, std::min(1.0f, noneProbability));
