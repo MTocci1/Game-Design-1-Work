@@ -29,24 +29,25 @@ int main()
 	spriteBackground.setTexture(tectureBackground);
 	// Set the spriteBackground to cover the screen
 	spriteBackground.setPosition(0, 0);
-	// Make a tree sprite
-	Texture textureTree;
-	textureTree.loadFromFile("graphics/tree.png");
-	Sprite spriteTree;
-	spriteTree.setTexture(textureTree);
-	spriteTree.setPosition(810, 0);
-	// Prepare the bee
-	Texture textureBee;
-	textureBee.loadFromFile("graphics/bee.png");
-	Sprite spriteBee;
-	spriteBee.setTexture(textureBee);
-	spriteBee.setPosition(0, 800);
-	//Is the bee currently moving?
-	bool beeActive = false;
+	// Make a pillar sprite
+	Texture texturePillar;
+	texturePillar.loadFromFile("graphics/pillar.png");
+	Sprite spritePillar;
+	spritePillar.setTexture(texturePillar);
+	spritePillar.setPosition(810, 0);
 
-	//How fast can the bee fly
-	float beeSpeedX = 400.0f;
-	float beeSpeedY = -400.0f;
+	// Prepare the goose
+	Texture textureGoose;
+	textureGoose.loadFromFile("graphics/goose.png");
+	Sprite spriteGoose;
+	spriteGoose.setTexture(textureGoose);
+	spriteGoose.setPosition(0, 800);
+	//Is the goose currently moving?
+	bool gooseActive = false;
+
+	//How fast can the goose fly
+	float gooseSpeedX = 400.0f;
+	float gooseSpeedY = -400.0f;
 
 	// make 3 cloud sprites from 1 texture
 	Texture textureCloud;
@@ -153,21 +154,21 @@ int main()
 	spriteAxe.setTexture(textureAxe);
 	spriteAxe.setPosition(700, 830);
 
-	// Line the axe up with the tree
+	// Line the axe up with the pillar
 	const float AXE_POSITION_LEFT = 700;
-	const float AXE_POSITION_RIGHT = 1075;
-	const float AXE_POSITION_MIDDLE = 887.5;
+	const float AXE_POSITION_RIGHT = 1200;
+	const float AXE_POSITION_MIDDLE = 1050.5;
 
-	// Prepare the flying log
-	Texture textureLog;
-	textureLog.loadFromFile("graphics/log.png");
-	Sprite spriteLog;
-	spriteLog.setTexture(textureLog);
-	spriteLog.setPosition(810, 720);
-	// Some other useful log related variables
-	bool logActive = false;
-	float logSpeedX = 1000;
-	float logSpeedY = -1500;
+	// Prepare the flying piece
+	Texture texturePiece;
+	texturePiece.loadFromFile("graphics/piece.png");
+	Sprite spritePiece;
+	spritePiece.setTexture(texturePiece);
+	spritePiece.setPosition(810, 720);
+	// Some other useful piece related variables
+	bool pieceActive = false;
+	float pieceSpeedX = 1000;
+	float pieceSpeedY = -1500;
 	// Control the player input
 	bool acceptInput = false;
 	// Prepare the sounds
@@ -231,7 +232,7 @@ int main()
 				// Listen for key presses again
 				acceptInput = true;
 				// hide the axe
-				spriteAxe.setPosition(2000,
+				spriteAxe.setPosition(3000,
 					spriteAxe.getPosition().y);
 			}
 		}
@@ -279,14 +280,15 @@ int main()
 				timeRemaining += (2 / score) + .15;
 				spriteAxe.setPosition(AXE_POSITION_RIGHT,
 					spriteAxe.getPosition().y);
-				spritePlayer.setPosition(1200, 720);
+				spriteAxe.setRotation(180);
+				spritePlayer.setPosition(1100, 720);
 				// Update the branches
 				updateBranches(score, deathsUnder10Seconds, deathsOver10Seconds);
 
-				// Set the log flying to the left
-				spriteLog.setPosition(810, 720);
-				logSpeedX = -5000;
-				logActive = true;
+				// Set the piece flying to the left
+				spritePiece.setPosition(810, 720);
+				pieceSpeedX = -5000;
+				pieceActive = true;
 				acceptInput = false;
 				// Play a chop sound
 				chop.play();
@@ -301,13 +303,14 @@ int main()
 				timeRemaining += (2 / score) + .15;
 				spriteAxe.setPosition(AXE_POSITION_LEFT,
 					spriteAxe.getPosition().y);
-				spritePlayer.setPosition(580, 720);
+				spriteAxe.setRotation(0);
+				spritePlayer.setPosition(620, 735);
 				// update the branches
 				updateBranches(score, deathsUnder10Seconds, deathsOver10Seconds);
-				// set the log flying
-				spriteLog.setPosition(810, 720);
-				logSpeedX = 5000;
-				logActive = true;
+				// set the piece flying
+				spritePiece.setPosition(810, 720);
+				pieceSpeedX = 5000;
+				pieceActive = true;
 				acceptInput = false;
 				// Play a chop sound
 				chop.play();
@@ -325,14 +328,15 @@ int main()
 				timeRemaining += (2 / score) + .15;
 				spriteAxe.setPosition(AXE_POSITION_MIDDLE,
 					spriteAxe.getPosition().y);
+				spriteAxe.setRotation(180);
 				spritePlayer.setPosition(960, 720);
 				// Update the branches
 				updateBranches(score, deathsUnder10Seconds, deathsOver10Seconds);
 
-				// Set the log flying to the left
-				spriteLog.setPosition(810, 720);
-				logSpeedX = -5000;
-				logActive = true;
+				// Set the piece flying to the left
+				spritePiece.setPosition(810, 720);
+				pieceSpeedX = -5000;
+				pieceActive = true;
 				acceptInput = false;
 				// Play a chop sound
 				chop.play();
@@ -400,39 +404,39 @@ int main()
 				}
 			}
 			
-			// The bee now moves diagonally, starts in the bottom right, and the starting height and speed is random
-			// Setup the bee
-			if (!beeActive)
+			// The goose now moves diagonally, starts in the bottom right, and the starting height and speed is random
+			// Setup the goose
+			if (!gooseActive)
 			{
-				// How fast is the bee on x axis
+				// How fast is the goose on x axis
 				srand((int)time(0));
-				beeSpeedX = (rand() % 200) + 200;
+				gooseSpeedX = (rand() % 200) + 200;
 
-				// How fast is the bee on y axis 
+				// How fast is the goose on y axis 
 				srand((int)time(0));
-				beeSpeedY = -1 * ((rand() % 200) + 200);
+				gooseSpeedY = -1 * ((rand() % 200) + 200);
 
-				//How high is the bee
+				//How high is the goose
 				srand((int)time(0) * 10);
 				float height = (rand() % 500) + 500;
 
-				// Set the bee's starting position
-				spriteBee.setPosition(1920, height);
-				beeActive = true;
+				// Set the goose's starting position
+				spriteGoose.setPosition(1920, height);
+				gooseActive = true;
 			}
 			else
-				//Move the bee
+				//Move the goose
 			{
-				// Update bee position
-				spriteBee.setPosition(
-					spriteBee.getPosition().x - (beeSpeedX * dt.asSeconds()),
-					spriteBee.getPosition().y + (beeSpeedY * dt.asSeconds())
+				// Update goose position
+				spriteGoose.setPosition(
+					spriteGoose.getPosition().x - (gooseSpeedX * dt.asSeconds()),
+					spriteGoose.getPosition().y + (gooseSpeedY * dt.asSeconds())
 				);
 
-				// Check if the bee is off-screen
-				if (spriteBee.getPosition().x < -100 || spriteBee.getPosition().y < -100)
+				// Check if the goose is off-screen
+				if (spriteGoose.getPosition().x < -100 || spriteGoose.getPosition().y < -100)
 				{
-					beeActive = false;
+					gooseActive = false;
 				}
 			}
 			// Manage the clouds
@@ -525,7 +529,7 @@ int main()
 				if (branchPositions[i] == side::LEFT)
 				{
 					// Move the sprite to the left side
-					branches[i].setPosition(610, height);
+					branches[i].setPosition(590, height);
 					// Flip the sprite round the other way
 					branches[i].setRotation(180);
 					// Scale to normal size
@@ -554,22 +558,22 @@ int main()
 					branches[i].setPosition(3000, height);
 				}
 			}
-			// Handle a flying log
-			if (logActive)
+			// Handle a flying piece
+			if (pieceActive)
 			{
-				spriteLog.setPosition(
-					spriteLog.getPosition().x +
-					(logSpeedX * dt.asSeconds()),
+				spritePiece.setPosition(
+					spritePiece.getPosition().x +
+					(pieceSpeedX * dt.asSeconds()),
 
-					spriteLog.getPosition().y +
-					(logSpeedY * dt.asSeconds()));
-				// Has the log reached the right hand edge?
-				if (spriteLog.getPosition().x < -100 ||
-					spriteLog.getPosition().x > 2000)
+					spritePiece.getPosition().y +
+					(pieceSpeedY * dt.asSeconds()));
+				// Has the piece reached the right hand edge?
+				if (spritePiece.getPosition().x < -100 ||
+					spritePiece.getPosition().x > 2000)
 				{
-					// Set it up ready to be a whole new log next frame
-					logActive = false;
-					spriteLog.setPosition(810, 720);
+					// Set it up ready to be a whole new piece next frame
+					pieceActive = false;
+					spritePiece.setPosition(810, 720);
 				}
 			}
 			// has the player been squished by a branch?
@@ -596,7 +600,7 @@ int main()
 				}
 
 				// Draw the gravestone
-				spriteRIP.setPosition(525, 760);
+				spriteRIP.setPosition(625, 760);
 				// hide the player
 				spritePlayer.setPosition(2000, 660);
 				// Change the text of the message
@@ -625,22 +629,22 @@ int main()
 		window.draw(spriteCloud1);
 		window.draw(spriteCloud2);
 		window.draw(spriteCloud3);
-		// Draw the tree
-		window.draw(spriteTree);
+		// Draw the pillar
+		window.draw(spritePillar);
 		//Draw the branches
 		for (int i = 0; i < NUM_BRANCHES; i++) {
 			window.draw(branches[i]);
 		}
+		// Draw the flying piece
+		window.draw(spritePiece);
 		// Draw the player
 		window.draw(spritePlayer);
 		// Draw the axe
 		window.draw(spriteAxe);
-		// Draw the flying log
-		window.draw(spriteLog);
 		// Draw the gravestone
 		window.draw(spriteRIP);
-		// Draw the Bee
-		window.draw(spriteBee);
+		// Draw the Goose
+		window.draw(spriteGoose);
 		// Draw the score
 		window.draw(scoreText);
 		// Draw the invinibility timers
