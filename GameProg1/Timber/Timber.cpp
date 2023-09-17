@@ -19,6 +19,11 @@ int main()
 	VideoMode vm(1920, 1080);
 	// Create and open a window for the game
 	RenderWindow window(vm, "Timber!!!", Style::Fullscreen);
+
+	// Create a view with a size of 1920x1080 to match the background
+	View view(Vector2f(960, 540), Vector2f(1920, 1080));
+	window.setView(view);
+
 	// Create a texture to hold a graphic on the GPU
 	Texture tectureBackground;
 	// Load a graphics into the texture
