@@ -137,7 +137,8 @@ int main()
 	Texture textureBranch;
 	textureBranch.loadFromFile("graphics/branch.png");
 	// Set the texture for each branch sprite
-	for (int i = 0; i < NUM_BRANCHES; i++) {
+	for (int i = 0; i < NUM_BRANCHES; i++) 
+	{
 		branches[i].setTexture(textureBranch);
 		branches[i].setPosition(-2000, -2000);
 		// Set the sprites origin to dead center
@@ -355,7 +356,8 @@ int main()
 				chop.play();
 			}
 			// Activate invincibility
-			if (canUseInvincibility && Keyboard::isKeyPressed(Keyboard::Space)) {
+			if (canUseInvincibility && Keyboard::isKeyPressed(Keyboard::Space)) 
+			{
 				isInvincible = true;
 				invincibilityTimer = invincibilityDuration;
 				canUseInvincibility = false;
@@ -380,7 +382,8 @@ int main()
 			// Size up the time bar
 			timeBar.setSize(Vector2f(timeBarWidthPerSecond *
 				timeRemaining, timeBarHeight));
-			if (timeRemaining <= 0.0f) {
+			if (timeRemaining <= 0.0f) 
+			{
 				// Since player didn't die, increase the difficulty
 				deathsOver10Seconds ++;
 
@@ -400,18 +403,22 @@ int main()
 			}
 
 			// Update invincibility timer
-			if (isInvincible) {
+			if (isInvincible) 
+			{
 				invincibilityTimer -= dt.asSeconds();
 				// If timer reaches 0 player is no longer invinsible
-				if (invincibilityTimer <= 0.0f) {
+				if (invincibilityTimer <= 0.0f) 
+				{
 					isInvincible = false;
 				}
 			}
 			// Update invincibility cooldown time
-			else if (!canUseInvincibility) {
+			else if (!canUseInvincibility) 
+			{
 				invincibilityCooldown -= dt.asSeconds();
 				// If cooldown reaches 0 allow user to use ability again
-				if (invincibilityCooldown <= 0.0f) {
+				if (invincibilityCooldown <= 0.0f) 
+				{
 					canUseInvincibility = true;
 					invincibilityCooldown = 30.0f;
 				}
@@ -536,7 +543,8 @@ int main()
 			invincibilityCooldownText.setString(cooldownText.str());
 
 			// update the branch sprites
-			for (int i = 0; i < NUM_BRANCHES; i++) {
+			for (int i = 0; i < NUM_BRANCHES; i++) 
+			{
 				float height = i * 150;
 				if (branchPositions[i] == side::LEFT)
 				{
@@ -600,7 +608,8 @@ int main()
 
 
 				// If player lived more than 10 seconds increase the difficulty
-				if (playerAliveTime >= 10.0f) {
+				if (playerAliveTime >= 10.0f) 
+				{
 					deathsOver10Seconds ++;
 					playerAliveTime = 0;
 				}
@@ -644,7 +653,8 @@ int main()
 		// Draw the pillar
 		window.draw(spritePillar);
 		//Draw the branches
-		for (int i = 0; i < NUM_BRANCHES; i++) {
+		for (int i = 0; i < NUM_BRANCHES; i++) 
+		{
 			window.draw(branches[i]);
 		}
 		// Draw the flying piece
