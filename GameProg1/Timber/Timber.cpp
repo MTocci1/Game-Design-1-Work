@@ -4,15 +4,18 @@
 #include <SFML/Audio.hpp>
 // Make code easier to type with "using namespace"
 using namespace sf;
+
 // This is where our game starts from
 // Function declaration
 void updateBranches(int seed, int deathsUnder10Seconds, int deathsOver10Seconds);
 const int NUM_BRANCHES = 6;
 Sprite branches[NUM_BRANCHES];
+
 // Where is the player/branch?
 // left or right?
 enum class side { LEFT, RIGHT, MIDDLE, NONE };
 side branchPositions[NUM_BRANCHES];
+
 int main()
 {
 	// Create a video mode object
@@ -20,13 +23,13 @@ int main()
 	// Create and open a window for the game
 	RenderWindow window(vm, "Timber!!!", Style::Fullscreen);
 
-	// Create a view with a size of 1920x1080 to match the background
+	// Create a view with a size of 1920 x 1080 to match the background regardless of natve resolution
 	View view(Vector2f(960, 540), Vector2f(1920, 1080));
 	window.setView(view);
 
 	// Create a texture to hold a graphic on the GPU
 	Texture tectureBackground;
-	// Load a graphics into the texture
+	// Load a graphic into the texture
 	tectureBackground.loadFromFile("graphics/background.png");
 	// Create a sprite
 	Sprite spriteBackground;
@@ -34,6 +37,7 @@ int main()
 	spriteBackground.setTexture(tectureBackground);
 	// Set the spriteBackground to cover the screen
 	spriteBackground.setPosition(0, 0);
+
 	// Make a pillar sprite
 	Texture texturePillar;
 	texturePillar.loadFromFile("graphics/pillar.png");
@@ -49,7 +53,6 @@ int main()
 	spriteGoose.setPosition(0, 800);
 	//Is the goose currently moving?
 	bool gooseActive = false;
-
 	//How fast can the goose fly
 	float gooseSpeedX = 400.0f;
 	float gooseSpeedY = -400.0f;
@@ -98,13 +101,15 @@ int main()
 	Time gameTimeTotal;
 	float timeRemaining = 6.0f;
 	float timeBarWidthPerSecond = timeBarStartWidth / timeRemaining;
+
 	// Track whether the game is running
 	bool paused = true;
+
 	// Draw some text
 	int score = 0;
 	Text messageText;
 	Text scoreText;
-	// We need to choose a font
+	// Load a font
 	Font font;
 	font.loadFromFile("fonts/Crang.ttf");
 	// Set the font to our message
@@ -127,6 +132,7 @@ int main()
 		textRect.height / 2.0f);
 	messageText.setPosition(1920 / 2.0f, 1080 / 2.0f);
 	scoreText.setPosition(20, 20);
+
 	// Prepare 6 Branches
 	Texture textureBranch;
 	textureBranch.loadFromFile("graphics/branch.png");
@@ -138,6 +144,7 @@ int main()
 		// we can then spin it round without changing its position
 		branches[i].setOrigin(220, 20);
 	}
+
 	// Prepare the player
 	Texture texturePlayer;
 	texturePlayer.loadFromFile("graphics/player.png");
@@ -146,12 +153,14 @@ int main()
 	spritePlayer.setPosition(580, 720);
 	// The player starts on the left
 	side playerSide = side::LEFT;
+
 	// Prepare the gravestone
 	Texture textureRIP;
 	textureRIP.loadFromFile("graphics/rip.png");
 	Sprite spriteRIP;
 	spriteRIP.setTexture(textureRIP);
 	spriteRIP.setPosition(600, 860);
+
 	// Prepare the axe
 	Texture textureAxe;
 	textureAxe.loadFromFile("graphics/axe.png");
@@ -174,19 +183,23 @@ int main()
 	bool pieceActive = false;
 	float pieceSpeedX = 1000;
 	float pieceSpeedY = -1500;
+
 	// Control the player input
 	bool acceptInput = false;
+
 	// Prepare the sounds
 	// The player chopping sound
 	SoundBuffer chopBuffer;
 	chopBuffer.loadFromFile("sound/chop.wav");
 	Sound chop;
 	chop.setBuffer(chopBuffer);
+
 	// The player has met his end under a branch
 	SoundBuffer deathBuffer;
 	deathBuffer.loadFromFile("sound/death.wav");
 	Sound death;
 	death.setBuffer(deathBuffer);
+
 	// Out of time
 	SoundBuffer ootBuffer;
 	ootBuffer.loadFromFile("sound/out_of_time.wav");
@@ -203,16 +216,12 @@ int main()
 	// Display the invinsibility timers
 	Text invincibilityTimerText;
 	Text invincibilityCooldownText;
-
 	invincibilityTimerText.setFont(font);
 	invincibilityCooldownText.setFont(font);
-
 	invincibilityTimerText.setCharacterSize(40);
 	invincibilityCooldownText.setCharacterSize(40);
-
 	invincibilityTimerText.setFillColor(Color::White);
 	invincibilityCooldownText.setFillColor(Color::White);
-
 	invincibilityTimerText.setPosition(1300, 20);
 	invincibilityCooldownText.setPosition(1500, 60);
 
@@ -258,7 +267,7 @@ int main()
 			invincibilityCooldown = 30.0f;
 
 
-			// Make all the branches disappear -
+			// Make all the branches disappear
 			// starting in the second position
 			for (int i = 1; i < NUM_BRANCHES; i++)
 			{
@@ -320,7 +329,6 @@ int main()
 				// Play a chop sound
 				chop.play();
 			}
-
 			// Added Middle position for the player
 			// Handle pressing the down arrow key
 			if (Keyboard::isKeyPressed(Keyboard::Down))
@@ -408,7 +416,6 @@ int main()
 					invincibilityCooldown = 30.0f;
 				}
 			}
-			
 			// The goose now moves diagonally, starts in the bottom right, and the starting height and speed is random
 			// Setup the goose
 			if (!gooseActive)
@@ -667,7 +674,7 @@ int main()
 	}
 	return 0;
 }
-// update the branches, also take into account player performance
+// Update the branches, also take into account player performance
 void updateBranches(int seed, int deathsUnder10Seconds, int deathsOver10Seconds)
 {
 	// Calculate the difference in deaths to adjust the probability of NONE
