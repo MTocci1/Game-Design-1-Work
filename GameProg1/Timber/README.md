@@ -10,6 +10,7 @@ Greek worker, taking down a pillar while avoiding falling pillar pieces.
 - Updated all the graphics to fit a new theme/setting, Greece.
 - Added all new sounds.
 - Changed the font.
+- Ensure the game will fill the screen regardless of native resolution.
 - Added a middle position that the player can occupy and chop. Pillar pieces can also fall in the middle
 - Altered the ambient object behavior. The goose and two clouds now move diagonally. All of the clouds will now spawn at the same height every time, instead of random.
 - Added dynamic difficulty. The pillar pieces will spawn less frequently the more the player dies under 10 seconds. The pillar pieces will spawn more frequently the
