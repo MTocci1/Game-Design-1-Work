@@ -13,9 +13,9 @@ int main()
 	int lives = 3;
 
 	// Create a bat at the bottom center of the screen
-	Bat bat(1920 / 2, 1080 - 20);
+	Bat bat(0 + 20, 1080 / 2);
 	// Create a ball
-	Ball ball(1920 / 2, 0);
+	Ball ball(1920, 1080 /2);
 	// Create a Text object called HUD
 	Text hud;
 	// A cool retro-style font
@@ -53,19 +53,19 @@ int main()
 		// Handle the pressing and releasing of the arrow keys
 		if (Keyboard::isKeyPressed(Keyboard::Left))
 		{
-			bat.moveLeft();
+			bat.moveUp();
 		}
 		else
 		{
-			bat.stopLeft();
+			bat.stopUp();
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Right))
 		{
-			bat.moveRight();
+			bat.moveDown();
 		}
 		else
 		{
-			bat.stopRight();
+			bat.stopDown();
 		}
 		/*	
 		Update the bat, the ball and the HUD
@@ -84,7 +84,7 @@ int main()
 		hud.setString(ss.str());
 
 		// Handle ball hitting the bottom
-		if (ball.getPosition().top > window.getSize().y)
+		if (ball.getPosition().left < 0)
 		{
 			// reverse the ball direction
 			ball.reboundBottom();
@@ -98,19 +98,22 @@ int main()
 				lives = 3;
 			}
 		}
+
 		// Handle ball hitting top
-		if (ball.getPosition().top < 0)
+		if (ball.getPosition().left + ball.getPosition().width > window.getSize().x)
 		{
 			ball.reboundBatOrTop();
 			// Add a point to the players score
 			score++;
 		}
+
 		// Handle ball hitting sides
-		if (ball.getPosition().left < 0 ||
-			ball.getPosition().left + ball.getPosition().width> window.getSize().x)
+		if (ball.getPosition().top < 0 ||
+			ball.getPosition().top > window.getSize().y)
 		{
 			ball.reboundSides();
 		}
+
 		// Has the ball hit the bat?
 		if (ball.getPosition().intersects(bat.getPosition()))
 		{

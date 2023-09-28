@@ -6,7 +6,7 @@ Bat::Bat(float startX, float startY)
 	m_Position.x = startX;
 	m_Position.y = startY;
 
-	m_Shape.setSize(sf::Vector2f(50, 5));
+	m_Shape.setSize(sf::Vector2f(5, 50));
 	m_Shape.setPosition(m_Position);
 }
 
@@ -18,29 +18,29 @@ RectangleShape Bat::getShape()
 {
 	return m_Shape;
 }
-void Bat::moveLeft()
+void Bat::moveUp()
 {
-	m_MovingLeft = true;
+	m_MovingUp = true;
 }
-void Bat::moveRight()
+void Bat::moveDown()
 {
-	m_MovingRight = true;
+	m_MovingDown = true;
 }
-void Bat::stopLeft()
+void Bat::stopUp()
 {
-	m_MovingLeft = false;
+	m_MovingUp = false;
 }
-void Bat::stopRight()
+void Bat::stopDown()
 {
-	m_MovingRight = false;
+	m_MovingDown = false;
 }
 void Bat::update(Time dt)
 {
-	if (m_MovingLeft) {
-		m_Position.x -= m_Speed * dt.asSeconds();
+	if (m_MovingUp) {
+		m_Position.y -= m_Speed * dt.asSeconds();
 	}
-	if (m_MovingRight) {
-		m_Position.x += m_Speed * dt.asSeconds();
+	if (m_MovingDown) {
+		m_Position.y += m_Speed * dt.asSeconds();
 	}
 	m_Shape.setPosition(m_Position);
 }
