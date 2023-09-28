@@ -30,7 +30,7 @@ void Bee::update(Time dt)
 		angle += 0.01f;
 	}
 	if (m_MovingCounterClockwise) {
-		// Move the bee in a counter-clockwise direction, set the angle to negative
+		// Move the bee in a counter-clockwise direction
 		beeX = circleCenterX + radius * std::cos(angle);
 		beeY = circleCenterY + radius * std::sin(angle);
 		angle -= 0.01f;
