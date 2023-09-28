@@ -9,11 +9,16 @@ int main()
 	VideoMode vm(1920, 1080);
 	// Create and open a window for the game
 	RenderWindow window(vm, "Pong", Style::Fullscreen);
+
+	// Create a view with a size of 1920 x 1080 to match the background regardless of natve resolution
+	View view(Vector2f(960, 540), Vector2f(1920, 1080));
+	window.setView(view);
+
 	int score = 0;
 	int lives = 3;
 
 	// Create a bat at the bottom center of the screen
-	Bat bat(0 + 20, 1080 / 2);
+	Bat bat(0 + 20, 1080 / 2, 0 + 20, 200);
 	// Create a ball
 	Ball ball(1920, 1080 /2);
 	// Create a Text object called HUD
@@ -51,7 +56,7 @@ int main()
 			window.close();
 		}
 		// Handle the pressing and releasing of the arrow keys
-		if (Keyboard::isKeyPressed(Keyboard::Left))
+		if (Keyboard::isKeyPressed(Keyboard::Up))
 		{
 			bat.moveUp();
 		}
@@ -59,13 +64,29 @@ int main()
 		{
 			bat.stopUp();
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Right))
+		if (Keyboard::isKeyPressed(Keyboard::Down))
 		{
 			bat.moveDown();
 		}
 		else
 		{
 			bat.stopDown();
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Right))
+		{
+			bat.moveRight();
+		}
+		else
+		{
+			bat.stopRight();
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Left))
+		{
+			bat.moveLeft();
+		}
+		else
+		{
+			bat.stopLeft();
 		}
 		/*	
 		Update the bat, the ball and the HUD
