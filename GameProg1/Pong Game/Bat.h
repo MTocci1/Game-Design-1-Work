@@ -14,8 +14,11 @@ private:
 	bool m_MovingLeft = false;
 	float m_LeftBound;
 	float m_RightBound;
+	float m_UpperBound;
+	float m_LowerBound;
+
 public:
-	Bat(float startX, float startY, float leftBound, float rightBound);
+	Bat(float startX, float startY, float leftBound, float rightBound, float upperBound, float lowerBound);
 	FloatRect getPosition();
 	RectangleShape getShape();
 	void moveUp();

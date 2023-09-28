@@ -34,11 +34,26 @@ void Ball::reboundBottom()
 	m_Position.x = 1900;
 	m_DirectionX = -m_DirectionX;
 }
+
+// Increase speed when ball hits bat
+void Ball::hitBat()
+{
+	m_Speed += 500.0;
+}
+void Ball::resetSpeed()
+{
+	m_Speed = 900.0;
+}
+
 void Ball::update(Time dt)
 {
 	// Update the ball's position
 	m_Position.y += m_DirectionY * m_Speed * dt.asSeconds();
 	m_Position.x -= m_DirectionX * m_Speed * dt.asSeconds();
+
+	// Apply drag to the ball so it slows down overtime
+	m_Speed -= m_Drag * dt.asSeconds();
+
 	// Move the ball 
 	m_Shape.setPosition(m_Position);
 }

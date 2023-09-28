@@ -18,7 +18,7 @@ int main()
 	int lives = 3;
 
 	// Create a bat at the bottom center of the screen
-	Bat bat(0 + 20, 1080 / 2, 0 + 20, 200);
+	Bat bat(0 + 20, 1080 / 2, 0 + 20, 200, 0, 1030);
 	// Create a ball
 	Ball ball(1920, 1080 /2);
 	// Create a Text object called HUD
@@ -32,7 +32,7 @@ int main()
 	hud.setCharacterSize(75);
 	// Choose a color
 	hud.setFillColor(Color::White);
-	hud.setPosition(20, 20);
+	hud.setPosition(1020, 20);
 	// Here is our clock for timing everything
 	Clock clock;
 	while (window.isOpen())
@@ -117,6 +117,8 @@ int main()
 				score = 0;
 				// reset the lives
 				lives = 3;
+				ball.resetSpeed();
+				
 			}
 		}
 
@@ -140,6 +142,7 @@ int main()
 		{
 			// Hit detected so reverse the ball and score a point
 			ball.reboundBatOrTop();
+			ball.hitBat();
 		}
 
 		/*

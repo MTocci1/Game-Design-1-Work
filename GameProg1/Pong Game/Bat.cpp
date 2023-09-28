@@ -1,12 +1,14 @@
 #include "Bat.h"
 
 // This the constructor and it is called when we create an object
-Bat::Bat(float startX, float startY, float leftBound, float rightBound)
+Bat::Bat(float startX, float startY, float leftBound, float rightBound, float upperBound, float lowerBound)
 {
 	m_Position.x = startX;
 	m_Position.y = startY;
 	m_LeftBound = leftBound;
 	m_RightBound = rightBound;
+	m_UpperBound = upperBound;
+	m_LowerBound = lowerBound;
 
 	m_Shape.setSize(sf::Vector2f(5, 50));
 	m_Shape.setPosition(m_Position);
@@ -74,6 +76,14 @@ void Bat::update(Time dt)
 	}
 	if (m_Position.x > m_RightBound) {
 		m_Position.x = m_RightBound;
+	}
+
+	// Ensure the bat stays within the upper and lower boundaries
+	if (m_Position.y < m_UpperBound) {
+		m_Position.y = m_UpperBound;
+	}
+	if (m_Position.y > m_LowerBound) {
+		m_Position.y = m_LowerBound;
 	}
 
 	m_Shape.setPosition(m_Position);
