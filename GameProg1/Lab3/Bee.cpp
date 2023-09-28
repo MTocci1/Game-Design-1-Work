@@ -31,9 +31,9 @@ void Bee::update(Time dt)
 	}
 	if (m_MovingCounterClockwise) {
 		// Move the bee in a counter-clockwise direction, set the angle to negative
-		beeX = circleCenterX + radius * std::cos(-angle);
-		beeY = circleCenterY + radius * std::sin(-angle);
-		angle += 0.01f;
+		beeX = circleCenterX + radius * std::cos(angle);
+		beeY = circleCenterY + radius * std::sin(angle);
+		angle -= 0.01f;
 	}
 	spriteBee.setPosition(beeX, beeY);
 }
