@@ -18,9 +18,10 @@ private:
 	float m_LowerBound;
 
 public:
-	Bat(float startX, float startY, float leftBound, float rightBound, float upperBound, float lowerBound);
+	Bat(float startX, float startY, float leftBound, float rightBound, float upperBound, float lowerBound, Texture& textureBat);
 	FloatRect getPosition();
 	RectangleShape getShape();
+	Sprite spriteBat;
 	void moveUp();
 	void moveDown();
 	void stopUp();

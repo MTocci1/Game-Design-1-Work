@@ -3,6 +3,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 int main()
 {
 	// Create a video mode object
@@ -16,16 +17,57 @@ int main()
 
 	int score = 0;
 	int lives = 3;
+	float gameTime = 0.0f;
+
+	// Variables for slow ability
 	float slowCooldown = 15.0f;
 	float slowDuration = 5.0f;
 	float slowTimer = 0.0f;
 	bool isSlowActive = false;
 	bool canUseSlow = true;
 
+	// Set up new sounds
+	// Ball hiting bat sound
+	SoundBuffer hitBuffer;
+	hitBuffer.loadFromFile("sounds/hit.mp3");
+	Sound hit;
+	hit.setBuffer(hitBuffer);
+
+	// Intro music
+	SoundBuffer introBuffer;
+	introBuffer.loadFromFile("sounds/intro_music.mp3");
+	Sound intro;
+	intro.setBuffer(introBuffer);
+
+	// Stage 2 music
+	SoundBuffer speedUpBuffer;
+	speedUpBuffer.loadFromFile("sounds/speed_up.mp3");
+	Sound speedUp;
+	speedUp.setBuffer(speedUpBuffer);
+
+	// Max Speed music
+	SoundBuffer maxSpeedBuffer;
+	maxSpeedBuffer.loadFromFile("sounds/max_speed.mp3");
+	Sound maxSpeed;
+	maxSpeed.setBuffer(maxSpeedBuffer);
+
+	// Ensure each sound plays only once per game
+	bool introPlayed = false;
+	bool speedUpPlayed = false;
+	bool maxSpeedPlayed = false;
+
+	// Prepare the bat
+	Texture textureBat;
+	textureBat.loadFromFile("graphics/bat.png");
 	// Create a bat at the bottom center of the screen
-	Bat bat(0 + 20, 1080 / 2, 0 + 20, 200, 0, 1030);
+	Bat bat(0 + 20, 1080 / 2, 0 + 20, 200, 0, 1030, textureBat);
+
+	// Prepare the balle
+	Texture textureBall;
+	textureBall.loadFromFile("graphics/ball.png");
 	// Create a ball
-	Ball ball(1920, 1080 /2);
+	Ball ball(1920, 1080 /2, textureBall);
+
 	// Create a Text object called HUD
 	Text hud;
 	Text timerText;
@@ -42,8 +84,10 @@ int main()
 	hud.setFillColor(Color::White);
 	timerText.setFillColor(Color::White);
 
-	hud.setPosition(920, 20);
+	hud.setPosition(1020, 20);
 	timerText.setPosition(1340, 1040);
+
+	
 
 	// Here is our clock for timing everything
 	Clock clock;
@@ -117,6 +161,8 @@ int main()
 		*/
 		// Update the delta time
 		Time dt = clock.restart();
+		gameTime += dt.asSeconds();
+		
 		bat.update(dt);
 		ball.update(dt);
 
@@ -132,6 +178,8 @@ int main()
 		// Handle ball hitting the bottom
 		if (ball.getPosition().left < 0)
 		{
+			// Play a hit sound
+			hit.play();
 			// reverse the ball direction
 			ball.reboundBottom();
 			// Remove a life
@@ -142,15 +190,24 @@ int main()
 				score = 0;
 				// reset the lives
 				lives = 3;
-				ball.resetSpeed();
+				// Pause other sounds before playing
+				intro.stop();
+				speedUp.stop();
+				maxSpeed.stop();
 				canUseSlow = true;
-				
+				introPlayed = false;
+				speedUpPlayed = false;
+				maxSpeedPlayed = false;
+				gameTime = 0;
+				ball.resetSpeed();
 			}
 		}
 
 		// Handle ball hitting top
 		if (ball.getPosition().left + ball.getPosition().width > window.getSize().x)
 		{
+			// Play a hit sound
+			hit.play();
 			ball.reboundBatOrTop();
 			// Add a point to the players score
 			score++;
@@ -160,12 +217,16 @@ int main()
 		if (ball.getPosition().top < 0 ||
 			ball.getPosition().top > window.getSize().y)
 		{
+			// Play a hit sound
+			hit.play();
 			ball.reboundSides();
 		}
 
 		// Has the ball hit the bat?
 		if (ball.getPosition().intersects(bat.getPosition()))
 		{
+			// Play a hit sound
+			hit.play();
 			// Hit detected so reverse the ball and score a point
 			ball.reboundBatOrTop();
 			ball.hitBat();
@@ -194,6 +255,36 @@ int main()
 			}
 		}
 
+		// Game Music (longer a game is played, more intense the music)
+		// Check if it's time to play the intro sound
+		if (!introPlayed && gameTime >= 0.0f)
+		{
+			intro.play();
+			introPlayed = true;
+		}
+
+		// Check if it's time to play the speedUp sound
+		if (!speedUpPlayed && gameTime >= 45.0f)
+		{
+			// Pause other sounds before playing
+			intro.pause();
+			maxSpeed.pause();
+
+			speedUp.play();
+			speedUpPlayed = true;
+		}
+
+		// Check if it's time to play the maxSpeed sound
+		if (!maxSpeedPlayed && gameTime >= 95.0f)
+		{
+			// Pause other sounds before playing
+			intro.pause();
+			speedUp.pause();
+
+			maxSpeed.play();
+			maxSpeedPlayed = true;
+		}
+
 		/*
 		Draw the bat, the ball and the HUD	
 		*****************************
@@ -203,8 +294,8 @@ int main()
 		window.clear();
 		window.draw(hud);
 		window.draw(timerText);
-		window.draw(bat.getShape());
-		window.draw(ball.getShape());
+		window.draw(bat.spriteBat);
+		window.draw(ball.spriteBall);
 		window.display();
 
 	}

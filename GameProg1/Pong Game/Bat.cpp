@@ -1,7 +1,7 @@
 #include "Bat.h"
 
 // This the constructor and it is called when we create an object
-Bat::Bat(float startX, float startY, float leftBound, float rightBound, float upperBound, float lowerBound)
+Bat::Bat(float startX, float startY, float leftBound, float rightBound, float upperBound, float lowerBound, Texture& textureBat)
 {
 	m_Position.x = startX;
 	m_Position.y = startY;
@@ -12,6 +12,10 @@ Bat::Bat(float startX, float startY, float leftBound, float rightBound, float up
 
 	m_Shape.setSize(sf::Vector2f(5, 50));
 	m_Shape.setPosition(m_Position);
+
+	spriteBat.setTexture(textureBat);
+	// Set bee position to the center of the circle
+	spriteBat.setPosition(m_Position.x, m_Position.y);
 }
 
 FloatRect Bat::getPosition()
@@ -86,5 +90,6 @@ void Bat::update(Time dt)
 		m_Position.y = m_LowerBound;
 	}
 
+	spriteBat.setPosition(m_Position.x, m_Position.y);
 	m_Shape.setPosition(m_Position);
 }

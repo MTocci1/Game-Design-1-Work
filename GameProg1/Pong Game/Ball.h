@@ -18,10 +18,13 @@ private:
 	// Slow ball ability
 	bool isSlowActive = false;
 
+	bool hasHitBat = false;
+
 public:
-	Ball(float startX, float startY);
+	Ball(float startX, float startY, Texture& textureBall);
 	FloatRect getPosition();
 	RectangleShape getShape();
+	Sprite spriteBall;
 	float getXVelocity();
 	void reboundSides();
 	void reboundBatOrTop();

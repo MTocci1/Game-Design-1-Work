@@ -1,11 +1,15 @@
 #include "Ball.h"
 // This is the constructor function
-Ball::Ball(float startX, float startY)
+Ball::Ball(float startX, float startY, Texture& textureBall)
 {
 	m_Position.x = startX;
 	m_Position.y = startY;
 	m_Shape.setSize(sf::Vector2f(10, 10));
 	m_Shape.setPosition(m_Position);
+
+	spriteBall.setTexture(textureBall);
+	// Set bee position to the center of the circle
+	spriteBall.setPosition(m_Position.x, m_Position.y);
 }
 
 FloatRect Ball::getPosition()
@@ -38,7 +42,11 @@ void Ball::reboundBottom()
 // Increase speed when ball hits bat
 void Ball::hitBat()
 {
-	m_Speed += 500.0;
+	if (!hasHitBat) {
+		// Increase ball speed
+		m_Speed += 500.0;
+		hasHitBat = true;
+	}
 }
 void Ball::resetSpeed()
 {
@@ -58,6 +66,8 @@ void Ball::endSlow()
 
 void Ball::update(Time dt)
 {
+	hasHitBat = false;
+
 	// Update the ball's position
 	m_Position.y += m_DirectionY * m_Speed * dt.asSeconds();
 	m_Position.x -= m_DirectionX * m_Speed * dt.asSeconds();
@@ -73,12 +83,23 @@ void Ball::update(Time dt)
 		m_Speed = 50.0;
 	}
 
-	// Ensure the ball doesn't change direction due to drag
+	// Set max speed for the ball
 	if (m_Speed >= 5000.0)
 	{
 		m_Speed = 5000.0;
 	}
 
+	// Ensure the ball stays within bounds
+	if (m_Position.y < 0) {
+		spriteBall.setPosition(m_Position.x, 0);
+		m_Shape.setPosition(m_Position);
+	}
+	if (m_Position.y > 1080) {
+		spriteBall.setPosition(m_Position.x, 1080);
+		m_Shape.setPosition(m_Position);
+	}
+
+	spriteBall.setPosition(m_Position.x, m_Position.y);
 	// Move the ball 
 	m_Shape.setPosition(m_Position);
 }
