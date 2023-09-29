@@ -45,6 +45,17 @@ void Ball::resetSpeed()
 	m_Speed = 900.0;
 }
 
+void Ball::slow()
+{
+	m_Speed -= 500.0;
+	isDragActive = false;
+}
+void Ball::endSlow()
+{
+	m_Speed += 500.0;
+	isDragActive = true;
+}
+
 void Ball::update(Time dt)
 {
 	// Update the ball's position
@@ -52,7 +63,21 @@ void Ball::update(Time dt)
 	m_Position.x -= m_DirectionX * m_Speed * dt.asSeconds();
 
 	// Apply drag to the ball so it slows down overtime
-	m_Speed -= m_Drag * dt.asSeconds();
+	if (isDragActive) {
+		m_Speed -= m_Drag * dt.asSeconds();
+	}
+
+	// Ensure the ball doesn't change direction due to drag
+	if (m_Speed <= 50.0)
+	{
+		m_Speed = 50.0;
+	}
+
+	// Ensure the ball doesn't change direction due to drag
+	if (m_Speed >= 5000.0)
+	{
+		m_Speed = 5000.0;
+	}
 
 	// Move the ball 
 	m_Shape.setPosition(m_Position);

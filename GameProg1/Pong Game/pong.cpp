@@ -16,6 +16,11 @@ int main()
 
 	int score = 0;
 	int lives = 3;
+	float slowCooldown = 15.0f;
+	float slowDuration = 5.0f;
+	float slowTimer = 0.0f;
+	bool isSlowActive = false;
+	bool canUseSlow = true;
 
 	// Create a bat at the bottom center of the screen
 	Bat bat(0 + 20, 1080 / 2, 0 + 20, 200, 0, 1030);
@@ -23,16 +28,23 @@ int main()
 	Ball ball(1920, 1080 /2);
 	// Create a Text object called HUD
 	Text hud;
+	Text timerText;
 	// A cool retro-style font
 	Font font;
 	font.loadFromFile("fonts/ka1.ttf");
 	// Set the font to our retro-style
 	hud.setFont(font);
+	timerText.setFont(font);
 	// Make it nice and big
 	hud.setCharacterSize(75);
+	timerText.setCharacterSize(25);
 	// Choose a color
 	hud.setFillColor(Color::White);
-	hud.setPosition(1020, 20);
+	timerText.setFillColor(Color::White);
+
+	hud.setPosition(920, 20);
+	timerText.setPosition(1340, 1040);
+
 	// Here is our clock for timing everything
 	Clock clock;
 	while (window.isOpen())
@@ -88,6 +100,15 @@ int main()
 		{
 			bat.stopLeft();
 		}
+		// Activate Slow
+		if (canUseSlow && Keyboard::isKeyPressed(Keyboard::Space))
+		{
+			isSlowActive = true;
+			slowTimer = slowDuration;
+			canUseSlow = false;
+			ball.slow();
+		}
+
 		/*	
 		Update the bat, the ball and the HUD
 		*****************************
@@ -104,6 +125,10 @@ int main()
 		ss << "Score:" << score << "  Lives:" << lives;
 		hud.setString(ss.str());
 
+		std::stringstream timers;
+		timers << "Slow Timer: " << static_cast<int>(slowTimer) << "s " << "Cooldown: " << static_cast<int>(slowCooldown) << "s";
+		timerText.setString(timers.str());
+
 		// Handle ball hitting the bottom
 		if (ball.getPosition().left < 0)
 		{
@@ -118,6 +143,7 @@ int main()
 				// reset the lives
 				lives = 3;
 				ball.resetSpeed();
+				canUseSlow = true;
 				
 			}
 		}
@@ -145,6 +171,29 @@ int main()
 			ball.hitBat();
 		}
 
+		// Update slow timer
+		if (isSlowActive)
+		{
+			slowTimer -= dt.asSeconds();
+			// If timer reaches 0 ball is no longer slow
+			if (slowTimer <= 0.0f)
+			{
+				isSlowActive = false;
+				ball.endSlow();
+			}
+		}
+		// Update slow cooldown time
+		else if (!canUseSlow)
+		{
+			slowCooldown -= dt.asSeconds();
+			// If cooldown reaches 0 allow user to use ability again
+			if (slowCooldown <= 0.0f)
+			{
+				canUseSlow = true;
+				slowCooldown = 15.0f;
+			}
+		}
+
 		/*
 		Draw the bat, the ball and the HUD	
 		*****************************
@@ -153,6 +202,7 @@ int main()
 		*/
 		window.clear();
 		window.draw(hud);
+		window.draw(timerText);
 		window.draw(bat.getShape());
 		window.draw(ball.getShape());
 		window.display();
