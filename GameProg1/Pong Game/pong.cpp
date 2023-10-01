@@ -62,13 +62,13 @@ int main()
 	// Create a bat at the bottom center of the screen
 	Bat bat(0 + 20, 1080 / 2, 0 + 20, 200, 0, 1030, textureBat);
 
-	// Prepare the balle
+	// Prepare the ball
 	Texture textureBall;
 	textureBall.loadFromFile("graphics/ball.png");
 	// Create a ball
 	Ball ball(1920, 1080 /2, textureBall);
 
-	// Create a Text object called HUD
+	// Create Text objects HUD and timerText
 	Text hud;
 	Text timerText;
 	// A cool retro-style font
@@ -83,11 +83,8 @@ int main()
 	// Choose a color
 	hud.setFillColor(Color::White);
 	timerText.setFillColor(Color::White);
-
 	hud.setPosition(1020, 20);
 	timerText.setPosition(1340, 1040);
-
-	
 
 	// Here is our clock for timing everything
 	Clock clock;
@@ -145,6 +142,7 @@ int main()
 			bat.stopLeft();
 		}
 		// Activate Slow
+		// Handle the pressing and releasing of spacebar
 		if (canUseSlow && Keyboard::isKeyPressed(Keyboard::Space))
 		{
 			isSlowActive = true;
@@ -171,6 +169,7 @@ int main()
 		ss << "Score:" << score << "  Lives:" << lives;
 		hud.setString(ss.str());
 
+		// Update timerText
 		std::stringstream timers;
 		timers << "Slow Timer: " << static_cast<int>(slowTimer) << "s " << "Cooldown: " << static_cast<int>(slowCooldown) << "s";
 		timerText.setString(timers.str());
@@ -194,6 +193,7 @@ int main()
 				intro.stop();
 				speedUp.stop();
 				maxSpeed.stop();
+				// Reset everything for next game
 				canUseSlow = true;
 				introPlayed = false;
 				speedUpPlayed = false;
@@ -208,7 +208,7 @@ int main()
 		{
 			// Play a hit sound
 			hit.play();
-			ball.reboundBatOrTop();
+			ball.reboundTop();
 			// Add a point to the players score
 			score++;
 		}
@@ -217,7 +217,6 @@ int main()
 		if (ball.getPosition().top < 0 ||
 			ball.getPosition().top > window.getSize().y)
 		{
-			// Play a hit sound
 			hit.play();
 			ball.reboundSides();
 		}
@@ -225,10 +224,7 @@ int main()
 		// Has the ball hit the bat?
 		if (ball.getPosition().intersects(bat.getPosition()))
 		{
-			// Play a hit sound
 			hit.play();
-			// Hit detected so reverse the ball and score a point
-			ball.reboundBatOrTop();
 			ball.hitBat();
 		}
 

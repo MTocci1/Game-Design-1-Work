@@ -1,4 +1,5 @@
 #include "Ball.h"
+
 // This is the constructor function
 Ball::Ball(float startX, float startY, Texture& textureBall)
 {
@@ -8,7 +9,6 @@ Ball::Ball(float startX, float startY, Texture& textureBall)
 	m_Shape.setPosition(m_Position);
 
 	spriteBall.setTexture(textureBall);
-	// Set bee position to the center of the circle
 	spriteBall.setPosition(m_Position.x, m_Position.y);
 }
 
@@ -28,9 +28,11 @@ void Ball::reboundSides()
 {
 	m_DirectionY = -m_DirectionY;
 }
-void Ball::reboundBatOrTop()
+void Ball::reboundTop()
 {
 	m_DirectionX = -m_DirectionX;
+	// Allow player to hit the ball again
+	hasHitBat = false;
 }
 void Ball::reboundBottom()
 {
@@ -42,7 +44,9 @@ void Ball::reboundBottom()
 // Increase speed when ball hits bat
 void Ball::hitBat()
 {
+	// Avoid multiple collision detections when bat is moving
 	if (!hasHitBat) {
+		m_DirectionX = -m_DirectionX;
 		// Increase ball speed
 		m_Speed += 500.0;
 		hasHitBat = true;
@@ -53,6 +57,7 @@ void Ball::resetSpeed()
 	m_Speed = 900.0;
 }
 
+// Slow the speed of the ball (player ability)
 void Ball::slow()
 {
 	m_Speed -= 500.0;
@@ -66,8 +71,6 @@ void Ball::endSlow()
 
 void Ball::update(Time dt)
 {
-	hasHitBat = false;
-
 	// Update the ball's position
 	m_Position.y += m_DirectionY * m_Speed * dt.asSeconds();
 	m_Position.x -= m_DirectionX * m_Speed * dt.asSeconds();
@@ -77,7 +80,8 @@ void Ball::update(Time dt)
 		m_Speed -= m_Drag * dt.asSeconds();
 	}
 
-	// Ensure the ball doesn't change direction due to drag
+	// Set minimum speed
+	// Also ensure the ball doesn't change direction due to drag
 	if (m_Speed <= 50.0)
 	{
 		m_Speed = 50.0;
@@ -90,6 +94,7 @@ void Ball::update(Time dt)
 	}
 
 	// Ensure the ball stays within bounds
+	// My attemp at trying to fix the ball clipping through the sides
 	if (m_Position.y < 0) {
 		spriteBall.setPosition(m_Position.x, 0);
 		m_Shape.setPosition(m_Position);
