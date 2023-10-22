@@ -8,6 +8,7 @@ using namespace std;
 
 void Zombie::spawn(float startX, float startY, int type, int seed)
 {
+	m_Type = type;
 
 	switch (type)
 	{
@@ -67,6 +68,11 @@ bool Zombie::hit()
 			"graphics/blood.png"));
 
 		return true;
+	}
+
+	if (m_Type == 2) 
+	{
+		m_Speed += 30.0;
 	}
 
 	// injured but not dead yet

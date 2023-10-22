@@ -9,7 +9,7 @@ private:
 	// How fast is each zombie type?
 	const float BLOATER_SPEED = 40;
 	const float CHASER_SPEED = 80;
-	const float CRAWLER_SPEED = 20;
+	float CRAWLER_SPEED = 20;
 
 	// How tough is each zombie type
 	const float BLOATER_HEALTH = 5;
@@ -34,6 +34,8 @@ private:
 
 	// Is it still alive?
 	bool m_Alive;
+
+	int m_Type;
 
 	// Public prototypes go here	
 public:
