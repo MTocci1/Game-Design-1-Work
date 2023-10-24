@@ -8,6 +8,7 @@ class Player
 private:
 	const float START_SPEED = 200;
 	const float START_HEALTH = 100;
+	const float START_SHIELD = 0;
 
 	// Where is the player
 	Vector2f m_Position;
@@ -39,11 +40,16 @@ private:
 	// What is the maximum health the player can have
 	int m_MaxHealth;
 
+	// What is the shield value?
+	int m_Shield;
+
 	// When was the player last hit
 	Time m_LastHit;
 
 	// Speed in pixels per second
 	float m_Speed;
+
+	bool m_hittingWall;
 
 
 	// All our public functions will come next
@@ -106,5 +112,9 @@ public:
 	// Increase the maximum amount of health the player can have
 	void increaseHealthLevel(int amount);
 
+	// Increase the maximum amount of health the player can have
+	void increaseShieldLevel(int amount);
 
+	// check if player is hitting wall
+	void hasHitWall(bool isPlayerHittingWall);
 };

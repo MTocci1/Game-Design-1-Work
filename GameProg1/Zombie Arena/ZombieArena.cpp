@@ -2,10 +2,12 @@
 #include <fstream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <vector>
 #include "ZombieArena.h"
 #include "Player.h"
 #include "Bullet.h"
 #include "Pickup.h"
+#include "Wall.h"
 #include "TextureHolder.h"
 
 using namespace sf;
@@ -80,6 +82,7 @@ int main()
 	Pickup healthPickup(1);
 	Pickup ammoPickup(2);
 	Pickup multishotPickup(3);
+	Pickup shieldPickup(4);
 
 
 	// About the game
@@ -88,6 +91,11 @@ int main()
 
 	// Multishot Level
 	int multishotLevel = 1;
+
+	// Wall variables
+	// Vector of wall objects
+	std::vector<Wall> walls;
+	int numWalls;
 
 	// For the home/game over screen
 	Sprite spriteGameOver;
@@ -286,6 +294,11 @@ int main()
 					clipSize = 6;
 					fireRate = 1;
 					multishotLevel = 1;
+					if (walls.size() > 0)
+					{
+						walls.clear();
+					}
+
 					// Reset the player's stats
 					player.resetPlayerStats();
 				}
@@ -479,6 +492,7 @@ int main()
 				healthPickup.setArena(arena);
 				ammoPickup.setArena(arena);
 				multishotPickup.setArena(arena);
+				shieldPickup.setArena(arena);
 
 				// Spawn the player in the middle of the arena
 				player.spawn(arena, resolution, tileSize);
@@ -490,6 +504,21 @@ int main()
 				delete[] zombies;
 				zombies = createHorde(numZombies, arena);
 				numZombiesAlive = numZombies;
+
+				if (walls.size() > 0) 
+				{
+					walls.clear();
+				}
+				
+				numWalls = 2 * wave;
+
+				for (int i = 0; i < numWalls; i++)
+				{
+					Wall newWall;
+					newWall.setArena(arena);
+					newWall.spawn();
+					walls.push_back(newWall);
+				}
 
 				// Play the powerup sound
 				powerup.play();
@@ -537,7 +566,7 @@ int main()
 			{
 				if (zombies[i].isAlive())
 				{
-					zombies[i].update(dt.asSeconds(), playerPosition);
+					zombies[i].update(dt.asSeconds(), playerPosition, numZombiesAlive);
 				}
 			}
 
@@ -553,6 +582,7 @@ int main()
 			healthPickup.update(dtAsSeconds);
 			ammoPickup.update(dtAsSeconds);
 			multishotPickup.update(dtAsSeconds);
+			shieldPickup.update(dtAsSeconds);
 
 			// Collision detection
 			// Have any zombies been shot?
@@ -578,10 +608,6 @@ int main()
 									hiScore = score;
 								}
 								numZombiesAlive--;
-								// When all the zombies are dead (again)
-								if (numZombiesAlive == 0) {
-									state = State::LEVELING_UP;
-								}
 							}
 							// Make a splat sound
 							splat.play();
@@ -590,6 +616,11 @@ int main()
 					}
 				}
 			}// End zombie being shot
+
+			// When all the zombies are dead (again)
+			if (numZombiesAlive <= 0) {
+				state = State::LEVELING_UP;
+			}
 
 			// Have any zombies touched the player            
 			for (int i = 0; i < numZombies; i++)
@@ -640,6 +671,46 @@ int main()
 				reload.play();
 
 			}
+			// Has the player touched multishot pickup
+			if (player.getPosition().intersects
+			(shieldPickup.getPosition()) && shieldPickup.isSpawned())
+			{
+				
+				player.increaseShieldLevel(shieldPickup.gotIt());
+				// Play a sound
+				pickup.play();
+
+			}
+
+			// Have any zombies or player touched a wall
+			// Handle player touching wall
+			bool playerHitWall = false;
+			for (int i = 0; i < walls.size(); i++)
+			{
+				if (player.getPosition().intersects(walls[i].getPosition()))
+				{
+					playerHitWall = true;
+					break;
+				}
+			}
+
+			player.hasHitWall(playerHitWall);
+
+			// Handle zombie touching wall
+			for (int i = 0; i < numZombies; i++)
+			{
+				bool zombieHitWall = false;
+				for (int j = 0; j < walls.size(); j++)
+				{
+					if (walls[j].getPosition().intersects(zombies[i].getPosition()))
+					{
+						zombieHitWall = true;
+						break;
+					}
+				}
+				zombies[i].hasHitWall(zombieHitWall);
+			}
+
 
 			// size up the health bar
 			healthBar.setSize(Vector2f(player.getHealth() * 3, 50));
@@ -691,6 +762,11 @@ int main()
 			// Draw the background
 			window.draw(background, &textureBackground);
 
+			// Draw the walls 
+			for (int i = 0; i < walls.size(); i++) {
+				window.draw(walls[i].getSprite());
+			}
+
 			// Draw the zombies
 			for (int i = 0; i < numZombies; i++)
 			{
@@ -722,6 +798,11 @@ int main()
 			if (multishotPickup.isSpawned())
 			{
 				window.draw(multishotPickup.getSprite());
+			}
+
+			if (shieldPickup.isSpawned())
+			{
+				window.draw(shieldPickup.getSprite());
 			}
 
 			//Draw the crosshair

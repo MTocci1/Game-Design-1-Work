@@ -27,7 +27,7 @@ void Zombie::spawn(float startX, float startY, int type, int seed)
 			"graphics/chaser.png"));
 
 		m_Speed = 70;
-		m_Health = 1;
+		m_Health = 2;
 		break;
 
 	case 2:
@@ -70,6 +70,13 @@ bool Zombie::hit()
 		return true;
 	}
 
+	// Increase crawler speed if shot
+	if (m_Type == 1)
+	{
+		retreatTime = 3.0;
+	}
+
+	// Increase crawler speed if shot
 	if (m_Type == 2) 
 	{
 		m_Speed += 30.0;
@@ -96,34 +103,277 @@ Sprite Zombie::getSprite()
 }
 
 void Zombie::update(float elapsedTime,
-	Vector2f playerLocation)
+	Vector2f playerLocation, int& numZombiesAlive)
 {
 	float playerX = playerLocation.x;
 	float playerY = playerLocation.y;
 
-	// Update the zombie position variables
-	if (playerX > m_Position.x)
+	// Update the Bloater zombie position variables
+	if (m_hittingWall)
 	{
-		m_Position.x = m_Position.x +
-			m_Speed * elapsedTime;
+		if (m_Type == 0 && m_Health > 1) {
+			if (playerX > m_Position.x)
+			{
+				m_Position.x = m_Position.x -
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY > m_Position.y)
+			{
+				m_Position.y = m_Position.y -
+					m_Speed * elapsedTime;
+			}
+
+			if (playerX < m_Position.x)
+			{
+				m_Position.x = m_Position.x +
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY < m_Position.y)
+			{
+				m_Position.y = m_Position.y +
+					m_Speed * elapsedTime;
+			}
+		}
 	}
 
-	if (playerY > m_Position.y)
+	if (!m_hittingWall)
 	{
-		m_Position.y = m_Position.y +
-			m_Speed * elapsedTime;
+		if (m_Type == 0 && m_Health > 1) {
+			if (playerX > m_Position.x)
+			{
+				m_Position.x = m_Position.x +
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY > m_Position.y)
+			{
+				m_Position.y = m_Position.y +
+					m_Speed * elapsedTime;
+			}
+
+			if (playerX < m_Position.x)
+			{
+				m_Position.x = m_Position.x -
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY < m_Position.y)
+			{
+				m_Position.y = m_Position.y -
+					m_Speed * elapsedTime;
+			}
+		}
 	}
 
-	if (playerX < m_Position.x)
+	// Make bloater stop for 5 seconds then explode, if on 1 health
+	if (m_Type == 0 && m_Health == 1)
 	{
-		m_Position.x = m_Position.x -
-			m_Speed * elapsedTime;
+		bloaterExplodeTime -= elapsedTime;
 	}
 
-	if (playerY < m_Position.y)
+	// if 5 seconds have passed, then explode
+	if (bloaterExplodeTime <= 0)
 	{
-		m_Position.y = m_Position.y -
-			m_Speed * elapsedTime;
+		hit();
+		numZombiesAlive -= 1;
+		m_Alive = false;
+		m_Sprite.setTexture(TextureHolder::GetTexture(
+			"graphics/blood.png"));
+	}
+
+	if (m_hittingWall)
+	{
+		// Update the Chaser zombie position variables
+		if ((m_Type == 1 && m_Health == 2) || (m_Type == 1 && m_Health == 1 && retreatTime <= 0) || (m_Type == 1 && m_Health == 0 && retreatTime <= 0))
+		{
+			if (playerX > m_Position.x)
+			{
+				m_Position.x = m_Position.x -
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY > m_Position.y)
+			{
+				m_Position.y = m_Position.y -
+					m_Speed * elapsedTime;
+			}
+
+			if (playerX < m_Position.x)
+			{
+				m_Position.x = m_Position.x +
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY < m_Position.y)
+			{
+				m_Position.y = m_Position.y +
+					m_Speed * elapsedTime;
+			}
+		}
+	}
+
+	if (!m_hittingWall)
+	{
+		// Update the Chaser zombie position variables
+		if ((m_Type == 1 && m_Health == 2) || (m_Type == 1 && m_Health == 1 && retreatTime <= 0) || (m_Type == 1 && m_Health == 0 && retreatTime <= 0))
+		{
+			if (playerX > m_Position.x)
+			{
+				m_Position.x = m_Position.x +
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY > m_Position.y)
+			{
+				m_Position.y = m_Position.y +
+					m_Speed * elapsedTime;
+			}
+
+			if (playerX < m_Position.x)
+			{
+				m_Position.x = m_Position.x -
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY < m_Position.y)
+			{
+				m_Position.y = m_Position.y -
+					m_Speed * elapsedTime;
+			}
+		}
+	}
+
+	// Update retreat time
+	if ((m_Type == 1 && m_Health == 1) || (m_Type == 1 && m_Health == 0))
+	{
+		retreatTime -= elapsedTime;
+	}
+
+	if (m_hittingWall)
+	{
+		// Make the chaser retreat if shot
+		if ((m_Type == 1 && m_Health == 1 && retreatTime > 0) || (m_Type == 1 && m_Health == 0 && retreatTime > 0))
+		{
+			if (playerX > m_Position.x)
+			{
+				m_Position.x = m_Position.x +
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY > m_Position.y)
+			{
+				m_Position.y = m_Position.y +
+					m_Speed * elapsedTime;
+			}
+
+			if (playerX < m_Position.x)
+			{
+				m_Position.x = m_Position.x -
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY < m_Position.y)
+			{
+				m_Position.y = m_Position.y -
+					m_Speed * elapsedTime;
+			}
+		}
+	}
+
+	if (!m_hittingWall)
+	{
+		// Make the chaser retreat if shot
+		if ((m_Type == 1 && m_Health == 1 && retreatTime > 0) || (m_Type == 1 && m_Health == 0 && retreatTime > 0))
+		{
+			if (playerX > m_Position.x)
+			{
+				m_Position.x = m_Position.x -
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY > m_Position.y)
+			{
+				m_Position.y = m_Position.y -
+					m_Speed * elapsedTime;
+			}
+
+			if (playerX < m_Position.x)
+			{
+				m_Position.x = m_Position.x +
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY < m_Position.y)
+			{
+				m_Position.y = m_Position.y +
+					m_Speed * elapsedTime;
+			}
+		}
+	}
+
+
+	if (m_hittingWall)
+	{
+		// Update the Crawler zombie position variables
+		if (m_Type == 2)
+		{
+			if (playerX > m_Position.x)
+			{
+				m_Position.x = m_Position.x -
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY > m_Position.y)
+			{
+				m_Position.y = m_Position.y -
+					m_Speed * elapsedTime;
+			}
+
+			if (playerX < m_Position.x)
+			{
+				m_Position.x = m_Position.x +
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY < m_Position.y)
+			{
+				m_Position.y = m_Position.y +
+					m_Speed * elapsedTime;
+			}
+		}
+	}
+
+	if (!m_hittingWall)
+	{
+		// Update the Crawler zombie position variables
+		if (m_Type == 2)
+		{
+			if (playerX > m_Position.x)
+			{
+				m_Position.x = m_Position.x +
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY > m_Position.y)
+			{
+				m_Position.y = m_Position.y +
+					m_Speed * elapsedTime;
+			}
+
+			if (playerX < m_Position.x)
+			{
+				m_Position.x = m_Position.x -
+					m_Speed * elapsedTime;
+			}
+
+			if (playerY < m_Position.y)
+			{
+				m_Position.y = m_Position.y -
+					m_Speed * elapsedTime;
+			}
+		}
 	}
 
 	// Move the sprite
@@ -135,6 +385,9 @@ void Zombie::update(float elapsedTime,
 		* 180) / 3.141;
 
 	m_Sprite.setRotation(angle);
+}
 
-
+void Zombie::hasHitWall(bool isZombieHittingWall)
+{
+	m_hittingWall = isZombieHittingWall;
 }

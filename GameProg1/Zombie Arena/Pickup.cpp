@@ -24,13 +24,21 @@ Pickup::Pickup(int type)
 		// How much is pickup worth
 		m_Value = AMMO_START_VALUE;
 	}
-	else
+	else if (m_Type == 3)
 	{
 		m_Sprite = Sprite(TextureHolder::GetTexture(
 			"graphics/multishot_pickup.png"));
 
 		// How much is pickup worth
 		m_Value = MULTISHOT_START_VALUE;
+	}
+	else 
+	{
+		m_Sprite = Sprite(TextureHolder::GetTexture(
+			"graphics/shield_pickup.png"));
+
+		// How much is pickup worth
+		m_Value = SHIELD_START_VALUE;
 	}
 
 	m_Sprite.setOrigin(25, 25);
@@ -128,9 +136,13 @@ void Pickup::upgrade()
 	{
 		m_Value += (AMMO_START_VALUE * .5);
 	}
-	else 
+	else if (m_Type == 3)
 	{
-		m_Value += (MULTISHOT_START_VALUE * .5);
+		m_Value += (MULTISHOT_START_VALUE);
+	}
+	else
+	{
+		m_Value += (SHIELD_START_VALUE * .5);
 	}
 
 	// Make them more frequent and last longer

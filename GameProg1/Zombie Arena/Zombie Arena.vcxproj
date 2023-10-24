@@ -135,6 +135,7 @@
     <ClCompile Include="CreateHorde.cpp" />
     <ClCompile Include="Pickup.cpp" />
     <ClCompile Include="TextureHolder.cpp" />
+    <ClCompile Include="Wall.cpp" />
     <ClCompile Include="Zombie.cpp" />
     <ClCompile Include="ZombieArena.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="Pickup.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="TextureHolder.h" />
+    <ClInclude Include="Wall.h" />
     <ClInclude Include="Zombie.h" />
     <ClInclude Include="ZombieArena.h" />
   </ItemGroup>

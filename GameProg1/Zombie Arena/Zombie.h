@@ -13,7 +13,7 @@ private:
 
 	// How tough is each zombie type
 	const float BLOATER_HEALTH = 5;
-	const float CHASER_HEALTH = 1;
+	const float CHASER_HEALTH = 2;
 	const float CRAWLER_HEALTH = 3;
 
 	// Make each zombie vary its speed slightly
@@ -37,6 +37,15 @@ private:
 
 	int m_Type;
 
+	// New bloater variables
+	float bloaterExplodeTime = 5.0;
+	bool didExplode = false;
+
+	// New Chaser Variable
+	float retreatTime = 3.0;
+
+	bool m_hittingWall;
+
 	// Public prototypes go here	
 public:
 
@@ -56,5 +65,8 @@ public:
 	Sprite getSprite();
 
 	// Update the zombie each frame
-	void update(float elapsedTime, Vector2f playerLocation);
+	void update(float elapsedTime, Vector2f playerLocation, int& numZombiesAlive);
+
+	// check if zombie is hitting wall
+	void hasHitWall(bool isZombieHittingWall);
 };

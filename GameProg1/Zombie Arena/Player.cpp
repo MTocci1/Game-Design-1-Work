@@ -6,12 +6,12 @@ Player::Player()
 	m_Speed = START_SPEED;
 	m_Health = START_HEALTH;
 	m_MaxHealth = START_HEALTH;
+	m_Shield = START_SHIELD;
 
 	// Associate a texture with the sprite
 	// !!Watch this space!!
 	m_Sprite = Sprite(TextureHolder::GetTexture(
 		"graphics/player.png"));
-
 	// Set the origin of the sprite to the centre, 
 	// for smooth rotation
 	m_Sprite.setOrigin(25, 25);
@@ -22,6 +22,8 @@ void Player::resetPlayerStats()
 	m_Speed = START_SPEED;
 	m_Health = START_HEALTH;
 	m_MaxHealth = START_HEALTH;
+	m_Shield = START_SHIELD;
+
 }
 
 void Player::spawn(IntRect arena, Vector2f resolution, int tileSize)
@@ -39,7 +41,7 @@ void Player::spawn(IntRect arena, Vector2f resolution, int tileSize)
 	// Remember how big the tiles are in this arena
 	m_TileSize = tileSize;
 
-	// Strore the resolution for future use
+	// Store the resolution for future use
 	m_Resolution.x = resolution.x;
 	m_Resolution.y = resolution.y;
 
@@ -52,15 +54,31 @@ Time Player::getLastHitTime()
 
 bool Player::hit(Time timeHit)
 {
-	if (timeHit.asMilliseconds() - m_LastHit.asMilliseconds() > 200)// 2 tenths of second
+	if (m_Shield <= 0)
 	{
-		m_LastHit = timeHit;
-		m_Health -= 10;
-		return true;
+		if (timeHit.asMilliseconds() - m_LastHit.asMilliseconds() > 200)// 2 tenths of second
+		{
+			m_LastHit = timeHit;
+			m_Health -= 10;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	else
 	{
-		return false;
+		if (timeHit.asMilliseconds() - m_LastHit.asMilliseconds() > 200)// 2 tenths of second
+		{
+			m_LastHit = timeHit;
+			m_Shield -= 10;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 }
@@ -133,29 +151,54 @@ void Player::stopDown()
 void Player::update(float elapsedTime, Vector2i mousePosition)
 {
 
-	if (m_UpPressed)
+	if (!m_hittingWall) 
 	{
-		m_Position.y -= m_Speed * elapsedTime;
+		if (m_UpPressed)
+		{
+			m_Position.y -= m_Speed * elapsedTime;
+		}
+
+		if (m_DownPressed)
+		{
+			m_Position.y += m_Speed * elapsedTime;
+		}
+
+		if (m_RightPressed)
+		{
+			m_Position.x += m_Speed * elapsedTime;
+		}
+
+		if (m_LeftPressed)
+		{
+			m_Position.x -= m_Speed * elapsedTime;
+		}
 	}
 
-	if (m_DownPressed)
+	if (m_hittingWall)
 	{
-		m_Position.y += m_Speed * elapsedTime;
-	}
+		if (m_UpPressed)
+		{
+			m_Position.y += m_Speed * elapsedTime;
+		}
 
-	if (m_RightPressed)
-	{
-		m_Position.x += m_Speed * elapsedTime;
-	}
+		if (m_DownPressed)
+		{
+			m_Position.y -= m_Speed * elapsedTime;
+		}
 
-	if (m_LeftPressed)
-	{
-		m_Position.x -= m_Speed * elapsedTime;
+		if (m_RightPressed)
+		{
+			m_Position.x -= m_Speed * elapsedTime;
+		}
+
+		if (m_LeftPressed)
+		{
+			m_Position.x += m_Speed * elapsedTime;
+		}
 	}
+	
 
 	m_Sprite.setPosition(m_Position);
-
-
 
 	// Keep the player in the arena
 	if (m_Position.x > m_Arena.width - m_TileSize)
@@ -184,6 +227,18 @@ void Player::update(float elapsedTime, Vector2i mousePosition)
 		* 180) / 3.141;
 
 	m_Sprite.setRotation(angle);
+
+	// Check if the shield is active
+	if (m_Shield > 0)
+	{
+		// Use the shielded texture
+		m_Sprite.setTexture(TextureHolder::GetTexture("graphics/shielded.png"));
+	}
+	else
+	{
+		// Use the original texture
+		m_Sprite.setTexture(TextureHolder::GetTexture("graphics/player.png"));
+	}
 }
 
 void Player::upgradeSpeed()
@@ -208,4 +263,14 @@ void Player::increaseHealthLevel(int amount)
 	{
 		m_Health = m_MaxHealth;
 	}
+}
+
+void Player::increaseShieldLevel(int amount)
+{
+	m_Shield = amount;
+}
+
+void Player::hasHitWall(bool isPlayerHittingWall)
+{
+	m_hittingWall = isPlayerHittingWall;
 }
