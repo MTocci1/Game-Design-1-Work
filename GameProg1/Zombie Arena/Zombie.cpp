@@ -6,7 +6,7 @@
 using namespace std;
 
 
-void Zombie::spawn(float startX, float startY, int type, int seed)
+void Zombie::spawn(float startX, float startY, int type, int seed, IntRect arena, int tileSize)
 {
 	m_Type = type;
 
@@ -52,6 +52,15 @@ void Zombie::spawn(float startX, float startY, int type, int seed)
 	m_Position.x = startX;
 	m_Position.y = startY;
 
+	// Copy the details of the arena to the zombie's m_Arena
+	m_Arena.left = arena.left;
+	m_Arena.width = arena.width;
+	m_Arena.top = arena.top;
+	m_Arena.height = arena.height;
+
+	// Remember how big the tiles are in this arena
+	m_TileSize = tileSize;
+
 	m_Sprite.setOrigin(25, 25);
 	m_Sprite.setPosition(m_Position);
 }
@@ -86,6 +95,32 @@ bool Zombie::hit()
 	return false;
 }
 
+Time Zombie::getLastHitTime()
+{
+	return m_LastHit;
+}
+
+bool Zombie::hitByLava(Time timeHit)
+{
+
+	if (timeHit.asMilliseconds() - m_LastHit.asMilliseconds() > 500)
+	{
+		m_Health--;
+		m_LastHit = timeHit;
+
+		if (m_Health < 0)
+		{
+			m_Alive = false;
+			m_Sprite.setTexture(TextureHolder::GetTexture("graphics/blood.png"));
+			return true;
+		}
+
+		return false;
+	}
+
+	return false;
+}
+
 bool Zombie::isAlive()
 {
 	return m_Alive;
@@ -107,6 +142,27 @@ void Zombie::update(float elapsedTime,
 {
 	float playerX = playerLocation.x;
 	float playerY = playerLocation.y;
+
+	// Keep the zombie in the arena
+	if (m_Position.x > m_Arena.width - m_TileSize)
+	{
+		m_Position.x = m_Arena.width - m_TileSize;
+	}
+
+	if (m_Position.x < m_Arena.left + m_TileSize)
+	{
+		m_Position.x = m_Arena.left + m_TileSize;
+	}
+
+	if (m_Position.y > m_Arena.height - m_TileSize)
+	{
+		m_Position.y = m_Arena.height - m_TileSize;
+	}
+
+	if (m_Position.y < m_Arena.top + m_TileSize)
+	{
+		m_Position.y = m_Arena.top + m_TileSize;
+	}
 
 	// Update the Bloater zombie position variables
 	if (m_hittingWall)

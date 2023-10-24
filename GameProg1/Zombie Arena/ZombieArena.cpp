@@ -8,6 +8,7 @@
 #include "Bullet.h"
 #include "Pickup.h"
 #include "Wall.h"
+#include "Lava.h"
 #include "TextureHolder.h"
 
 using namespace sf;
@@ -96,6 +97,11 @@ int main()
 	// Vector of wall objects
 	std::vector<Wall> walls;
 	int numWalls;
+
+	// Lava variables
+	// Vector of Lava objects
+	std::vector<Lava> lavaObstacles;
+	int numLavaObstacles;
 
 	// For the home/game over screen
 	Sprite spriteGameOver;
@@ -297,6 +303,11 @@ int main()
 					if (walls.size() > 0)
 					{
 						walls.clear();
+					}
+
+					if (lavaObstacles.size() > 0)
+					{
+						lavaObstacles.clear();
 					}
 
 					// Reset the player's stats
@@ -502,7 +513,7 @@ int main()
 
 				// Delete the previously allocated memory (if it exists)
 				delete[] zombies;
-				zombies = createHorde(numZombies, arena);
+				zombies = createHorde(numZombies, arena, tileSize);
 				numZombiesAlive = numZombies;
 
 				if (walls.size() > 0) 
@@ -518,6 +529,21 @@ int main()
 					newWall.setArena(arena);
 					newWall.spawn();
 					walls.push_back(newWall);
+				}
+
+				if (lavaObstacles.size() > 0)
+				{
+					lavaObstacles.clear();
+				}
+
+				numLavaObstacles = 2 * wave;
+
+				for (int i = 0; i < numLavaObstacles; i++)
+				{
+					Lava newLava;
+					newLava.setArena(arena);
+					newLava.spawn();
+					lavaObstacles.push_back(newLava);
 				}
 
 				// Play the powerup sound
@@ -711,6 +737,53 @@ int main()
 				zombies[i].hasHitWall(zombieHitWall);
 			}
 
+			// Have any zombies or player touched lava
+			// Handle player touching lava
+			for (int i = 0; i < lavaObstacles.size(); i++)
+			{
+				if (player.getPosition().intersects(lavaObstacles[i].getPosition()))
+				{
+					// Do something
+					if (player.hit(gameTimeTotal))
+					{
+						// More here later
+						hit.play();
+					}
+					if (player.getHealth() <= 0)
+					{
+						state = State::GAME_OVER;
+						std::ofstream outputFile("gamedata/scores.txt");
+						// << writes the data
+						outputFile << hiScore;
+						outputFile.close();
+					}
+				}
+			}
+
+			// Handle zombie touching lava
+			for (int i = 0; i < numZombies; i++)
+			{
+				for (int j = 0; j < lavaObstacles.size(); j++)
+				{
+					if (lavaObstacles[j].getPosition().intersects(zombies[i].getPosition()) 
+						&& zombies[i].isAlive())
+					{
+						if (zombies[i].hitByLava(gameTimeTotal))
+						{
+							// Not just a hit but a kill too
+							score += 10;
+							if (score >= hiScore)
+							{
+								hiScore = score;
+							}
+							numZombiesAlive--;
+						}
+						// Make a splat sound
+						splat.play();
+					}
+				}
+			}
+
 
 			// size up the health bar
 			healthBar.setSize(Vector2f(player.getHealth() * 3, 50));
@@ -761,6 +834,11 @@ int main()
 
 			// Draw the background
 			window.draw(background, &textureBackground);
+
+			// Draw the lava 
+			for (int i = 0; i < lavaObstacles.size(); i++) {
+				window.draw(lavaObstacles[i].getSprite());
+			}
 
 			// Draw the walls 
 			for (int i = 0; i < walls.size(); i++) {

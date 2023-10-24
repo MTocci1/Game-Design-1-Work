@@ -1,7 +1,7 @@
 #include "ZombieArena.h"
 #include "Zombie.h"
 
-Zombie* createHorde(int numZombies, IntRect arena)
+Zombie* createHorde(int numZombies, IntRect arena, int tileSize)
 {
 	Zombie* zombies = new Zombie[numZombies];
 
@@ -50,7 +50,7 @@ Zombie* createHorde(int numZombies, IntRect arena)
 		int type = (rand() % 3);
 
 		// Spawn the new zombie into the array
-		zombies[i].spawn(x, y, type, i);
+		zombies[i].spawn(x, y, type, i, arena, tileSize);
 
 	}
 	return zombies;

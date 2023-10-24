@@ -10,7 +10,7 @@ Wall::Wall()
 void Wall::setArena(IntRect arena)
 {
 
-	// Copy the details of the arena to the pickup's m_Arena
+	// Copy the details of the arena to the walls's m_Arena
 	m_Arena.left = arena.left + 50;
 	m_Arena.width = arena.width - 50;
 	m_Arena.top = arena.top + 50;

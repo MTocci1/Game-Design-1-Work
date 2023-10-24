@@ -46,17 +46,32 @@ private:
 
 	bool m_hittingWall;
 
+	// When was the zombie last hit by lava
+	Time m_LastHit;
+
+	// What size is the current arena
+	IntRect m_Arena;
+
+	// How big is each tile of the arena
+	int m_TileSize;
+
 	// Public prototypes go here	
 public:
 
 	// Handle when a bullet hits a zombie
 	bool hit();
 
+	// Handle when zombie steps in lava
+	bool hitByLava(Time timeHit);
+
+	// How long ago was the zombie last hit by lava
+	Time getLastHitTime();
+
 	// Find out if the zombie is alive
 	bool isAlive();
 
 	// Spawn a new zombie
-	void spawn(float startX, float startY, int type, int seed);
+	void spawn(float startX, float startY, int type, int seed, IntRect arena, int tileSize);
 
 	// Return a rectangle that is the position in the world
 	FloatRect getPosition();
