@@ -167,7 +167,7 @@ void Zombie::update(float elapsedTime,
 	// Update the Bloater zombie position variables
 	if (m_hittingWall)
 	{
-		if (m_Type == 0 && m_Health > 1) {
+		if (m_Type == 0 && m_Health > 0) {
 			if (playerX > m_Position.x)
 			{
 				m_Position.x = m_Position.x -
@@ -193,10 +193,9 @@ void Zombie::update(float elapsedTime,
 			}
 		}
 	}
-
 	if (!m_hittingWall)
 	{
-		if (m_Type == 0 && m_Health > 1) {
+		if (m_Type == 0 && m_Health > 0) {
 			if (playerX > m_Position.x)
 			{
 				m_Position.x = m_Position.x +
@@ -224,7 +223,7 @@ void Zombie::update(float elapsedTime,
 	}
 
 	// Make bloater stop for 5 seconds then explode, if on 1 health
-	if (m_Type == 0 && m_Health == 1)
+	if (m_Type == 0 && m_Health == 0)
 	{
 		bloaterExplodeTime -= elapsedTime;
 	}
@@ -237,11 +236,12 @@ void Zombie::update(float elapsedTime,
 		m_Alive = false;
 		m_Sprite.setTexture(TextureHolder::GetTexture(
 			"graphics/blood.png"));
+		bloaterExplodeTime == 5.0;
 	}
 
+	// Update the Chaser zombie position variables
 	if (m_hittingWall)
 	{
-		// Update the Chaser zombie position variables
 		if ((m_Type == 1 && m_Health == 2) || (m_Type == 1 && m_Health == 1 && retreatTime <= 0) || (m_Type == 1 && m_Health == 0 && retreatTime <= 0))
 		{
 			if (playerX > m_Position.x)
@@ -269,10 +269,8 @@ void Zombie::update(float elapsedTime,
 			}
 		}
 	}
-
 	if (!m_hittingWall)
 	{
-		// Update the Chaser zombie position variables
 		if ((m_Type == 1 && m_Health == 2) || (m_Type == 1 && m_Health == 1 && retreatTime <= 0) || (m_Type == 1 && m_Health == 0 && retreatTime <= 0))
 		{
 			if (playerX > m_Position.x)
@@ -301,15 +299,15 @@ void Zombie::update(float elapsedTime,
 		}
 	}
 
-	// Update retreat time
+	// Update retreat time for Chaser
 	if ((m_Type == 1 && m_Health == 1) || (m_Type == 1 && m_Health == 0))
 	{
 		retreatTime -= elapsedTime;
 	}
 
+	// Make the chaser retreat if shot
 	if (m_hittingWall)
 	{
-		// Make the chaser retreat if shot
 		if ((m_Type == 1 && m_Health == 1 && retreatTime > 0) || (m_Type == 1 && m_Health == 0 && retreatTime > 0))
 		{
 			if (playerX > m_Position.x)
@@ -337,10 +335,8 @@ void Zombie::update(float elapsedTime,
 			}
 		}
 	}
-
 	if (!m_hittingWall)
 	{
-		// Make the chaser retreat if shot
 		if ((m_Type == 1 && m_Health == 1 && retreatTime > 0) || (m_Type == 1 && m_Health == 0 && retreatTime > 0))
 		{
 			if (playerX > m_Position.x)
@@ -369,10 +365,9 @@ void Zombie::update(float elapsedTime,
 		}
 	}
 
-
+	// Update the Crawler zombie position variables
 	if (m_hittingWall)
 	{
-		// Update the Crawler zombie position variables
 		if (m_Type == 2)
 		{
 			if (playerX > m_Position.x)
@@ -400,10 +395,8 @@ void Zombie::update(float elapsedTime,
 			}
 		}
 	}
-
 	if (!m_hittingWall)
 	{
-		// Update the Crawler zombie position variables
 		if (m_Type == 2)
 		{
 			if (playerX > m_Position.x)
