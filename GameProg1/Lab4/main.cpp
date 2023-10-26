@@ -1,120 +1,144 @@
-#include "Bee.h"
-#include <sstream>
-#include <cstdlib>
+#include <array>
+#include <iostream>
 #include <SFML/Graphics.hpp>
-using namespace sf;
-using namespace std;
+#include "Planet.hpp"
+#include "Asteroid.hpp"
+#include "CollisionCounter.hpp"
 
-// Define an enum class for direction
-enum class Direction { Clockwise, CounterClockwise };
+using namespace sf;
+
+template <size_t N>
+void resetAsteroids(std::array<Asteroid, N>&, Vector2f const&, bool = false);
 
 int main()
 {
-	// Create a video mode object
-	VideoMode vm(500, 500);
-	// Create and open a window for the game
-	RenderWindow window(vm, "Lab3", Style::Fullscreen);
+    VideoMode vm(1024, 1024);
+    RenderWindow window(vm, "Lab #2");
+    View view(sf::FloatRect(0, 0, 1024, 1024));
+    window.setView(view);
 
+    Clock clock;
+    float timeElapsed = 0;
 
+    Vector2f center(512, 512);
+    float radius = 360;
+    float angle = 0;
 
-	// Create a texture to hold a graphic on the GPU
-	Texture tectureBackground;
-	// Load a graphics into the texture
-	tectureBackground.loadFromFile("graphics/grass.png");
-	// Create a sprite
-	Sprite spriteBackground;
-	// Attach the texture to the sprite
-	spriteBackground.setTexture(tectureBackground);
-	// Set the background sprite to cover the screen
-	spriteBackground.setPosition(0, 0);
-	// Make a flower sprite
-	Texture textureFlower;
-	textureFlower.loadFromFile("graphics/sunflower.png");
-	Sprite spriteFlower;
-	spriteFlower.setTexture(textureFlower);
-	spriteFlower.setPosition(280, 280);
-	// Prepare the bee
-	Texture textureBee;
-	textureBee.loadFromFile("graphics/bee.png");
+    Font font;
+    if (!font.loadFromFile("../../SFML-2.6.0/examples/opengl/resources/tuffy.ttf")) {
+        std::cerr << "Failed to load font file!" << std::endl;
+        return 1;
+    }
 
-	// Create a bee
-	Bee bee(textureBee);
+    bool acceptInput = true;
 
-	// Create a view with a size of 1024x1024 to match the background
-	View view(Vector2f(512, 512), Vector2f(1024, 1024));
-	window.setView(view);
+    Texture textureBackground;
+    textureBackground.loadFromFile("graphics/space.png");
+    Sprite spriteBackground;
+    spriteBackground.setTexture(textureBackground);
+    spriteBackground.setOrigin(0, 0);
+    spriteBackground.setPosition(0, 0);
+    spriteBackground.setScale(2, 2);
 
-	// Initialize the direction to clockwise
-	Direction movementDirection = Direction::Clockwise;
+    Texture texturePlanet;
+    texturePlanet.loadFromFile("graphics/planet.png");
+    Planet planet(texturePlanet, center);
 
-	bool acceptInput = false;
-	Clock clock;
-	while (window.isOpen())
-	{
-		/*
-		******************************************
-		Handle players input
-		******************************************
-		*/
+    CollisionCounter hudCounter(font, Vector2f(24, 24));
 
-		// Ensure the user has released the spacebar
-		Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == Event::KeyReleased)
-			{
-				// Listen for key presses again
-				acceptInput = true;
-			}
-		}
-		if (Keyboard::isKeyPressed(Keyboard::Escape))
-		{
-			window.close();
-		}
-		// Make sure we are accepting input
-		if (acceptInput)
-		{
-			if (Keyboard::isKeyPressed(Keyboard::Space))
-			{
-				if (movementDirection == Direction::Clockwise)
-				{
-					movementDirection = Direction::CounterClockwise;
-					bee.moveCounterClockwise();
-					acceptInput = false;
-				}
-				else
-				{
-					movementDirection = Direction::Clockwise;
-					bee.moveClockwise();
-					acceptInput = false;
-				}
-			}
-		}
-		/*
-		*****************************************
-		Update the scene
-		*****************************************
-		*/
+    const int MAX_ASTEROIDS = 5;
+    Texture textureAsteroid;
+    textureAsteroid.loadFromFile("graphics/moon.png");
+    std::array<Asteroid,MAX_ASTEROIDS> asteroids = {
+        Asteroid(textureAsteroid),
+        Asteroid(textureAsteroid),
+        Asteroid(textureAsteroid),
+        Asteroid(textureAsteroid),
+        Asteroid(textureAsteroid)
+    };
+    resetAsteroids(asteroids, center);
 
-		// All updates done in bee class
-		// Update the delta time
-		Time dt = clock.restart();
-		bee.update(dt);
+    // Add hudCounter as an observer for the planet subject
+    planet.addObserver(hudCounter);
 
-		/*
-		*****************************************
-		Draw the scene
-		*****************************************
-		*/
-		// Clear everything from the last frame
-		window.clear();
-		// Draw our game scene here
-		window.draw(spriteBackground);
-		// Draw the Flower
-		window.draw(spriteFlower);
-		// Draw the Bee
-		window.draw(bee.spriteBee);
-		window.display();
-	}
-	return 0;
+    while (window.isOpen())
+    {
+        Time dt = clock.restart();
+        timeElapsed += dt.asSeconds();
+        std::srand(std::time(0));
+
+        /**** HANDLE INPUT ****/
+
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            switch (event.type) {
+            case sf::Event::Closed:
+                window.close();
+                break;
+            case sf::Event::KeyReleased:
+                acceptInput = true;
+                break;
+            case sf::Event::KeyPressed:
+                switch (event.key.code) {
+                case Keyboard::Escape:
+                    window.close();
+                    break;
+                case Keyboard::Space:
+                    if (acceptInput)
+                    {
+                        acceptInput = false;
+                        resetAsteroids(asteroids, center, true);
+                    }
+                    break;
+                default:
+                    break;
+                }
+                break;
+            default:
+                break;
+            }
+        }
+
+        /**** UPDATE ****/
+
+        for (int i = 0; i < MAX_ASTEROIDS; i++)
+        {
+            asteroids[i].update(dt);
+            if (asteroids[i].getCollider().contains(center)) {
+                std::cerr << "Hit by asteroid " << i << "!\n";
+                planet.hit();
+                asteroids[i].destroy();
+            }
+        }
+
+        /**** RENDER ****/
+
+        window.clear();
+        window.draw(spriteBackground);
+        planet.draw(window);
+        for (int i = 0; i < MAX_ASTEROIDS; i++)
+        {
+            asteroids[i].draw(window);
+        }
+        hudCounter.draw(window);
+        window.display();
+    }
+
+    return 0;
+}
+
+template <size_t N>
+void resetAsteroids(std::array<Asteroid,N>& asteroids, Vector2f const& center, bool inMotion)
+{
+    std::cerr << "Resetting!" << asteroids.size() << std::endl;
+    const int RADIUS = 512;
+    for (int i = 0; i < asteroids.size(); i++)
+    {
+        float angle = 2 * std::acos(-1) * i / asteroids.size();
+        float dx = std::cos(angle) * RADIUS;
+        float dy = std::sin(angle) * RADIUS;
+        Vector2f pos(center.x + dx, center.y + dy);
+        asteroids[i].spawn(pos, inMotion ? center : pos);
+    }
 }
