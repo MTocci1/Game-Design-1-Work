@@ -49,7 +49,7 @@ private:
 	// Speed in pixels per second
 	float m_Speed;
 
-	bool m_hittingWall;
+	Vector2f prevPosition;
 
 
 	// All our public functions will come next
@@ -81,6 +81,8 @@ public:
 
 	// How much health has the player currently got?
 	int getHealth();
+
+	void cancelMove();
 
 	// The next four functions move the player
 	void moveLeft();
@@ -114,7 +116,4 @@ public:
 
 	// Increase the maximum amount of health the player can have
 	void increaseShieldLevel(int amount);
-
-	// check if player is hitting wall
-	void hasHitWall(bool isPlayerHittingWall);
 };

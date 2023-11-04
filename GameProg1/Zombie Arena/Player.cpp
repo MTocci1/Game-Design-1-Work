@@ -148,56 +148,37 @@ void Player::stopDown()
 	m_DownPressed = false;
 }
 
+void Player::cancelMove() {
+	m_Sprite.setPosition(prevPosition);
+	m_Position = prevPosition;
+}
+
 void Player::update(float elapsedTime, Vector2i mousePosition)
 {
 
-	if (!m_hittingWall) 
+	if (m_UpPressed)
 	{
-		if (m_UpPressed)
-		{
-			m_Position.y -= m_Speed * elapsedTime;
-		}
-
-		if (m_DownPressed)
-		{
-			m_Position.y += m_Speed * elapsedTime;
-		}
-
-		if (m_RightPressed)
-		{
-			m_Position.x += m_Speed * elapsedTime;
-		}
-
-		if (m_LeftPressed)
-		{
-			m_Position.x -= m_Speed * elapsedTime;
-		}
+		m_Position.y -= m_Speed * elapsedTime;
 	}
 
-	if (m_hittingWall)
+	if (m_DownPressed)
 	{
-		if (m_UpPressed)
-		{
-			m_Position.y += m_Speed * elapsedTime;
-		}
+		m_Position.y += m_Speed * elapsedTime;
+	}
 
-		if (m_DownPressed)
-		{
-			m_Position.y -= m_Speed * elapsedTime;
-		}
+	if (m_RightPressed)
+	{
+		m_Position.x += m_Speed * elapsedTime;
+	}
 
-		if (m_RightPressed)
-		{
-			m_Position.x -= m_Speed * elapsedTime;
-		}
-
-		if (m_LeftPressed)
-		{
-			m_Position.x += m_Speed * elapsedTime;
-		}
+	if (m_LeftPressed)
+	{
+		m_Position.x -= m_Speed * elapsedTime;
 	}
 	
 
+	prevPosition = m_Sprite.getPosition();
+	Vector2f newPosition = prevPosition + Vector2f(elapsedTime * m_Speed, elapsedTime * m_Speed);
 	m_Sprite.setPosition(m_Position);
 
 	// Keep the player in the arena
@@ -268,9 +249,4 @@ void Player::increaseHealthLevel(int amount)
 void Player::increaseShieldLevel(int amount)
 {
 	m_Shield = amount;
-}
-
-void Player::hasHitWall(bool isPlayerHittingWall)
-{
-	m_hittingWall = isPlayerHittingWall;
 }

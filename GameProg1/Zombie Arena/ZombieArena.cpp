@@ -710,17 +710,13 @@ int main()
 
 			// Have any zombies or player touched a wall
 			// Handle player touching wall
-			bool playerHitWall = false;
 			for (int i = 0; i < walls.size(); i++)
 			{
-				if (player.getPosition().intersects(walls[i].getPosition()))
+				if (player.getPosition().intersects(walls[i].getCollider()))
 				{
-					playerHitWall = true;
-					break;
+					player.cancelMove();
 				}
 			}
-
-			player.hasHitWall(playerHitWall);
 
 			// Handle zombie touching wall
 			for (int i = 0; i < numZombies; i++)

@@ -39,4 +39,6 @@ public:
 	// Is this pickup currently spawned?
 	bool isSpawned();
 
+	FloatRect getCollider() const;
+
 };

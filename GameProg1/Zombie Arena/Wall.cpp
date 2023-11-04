@@ -21,9 +21,20 @@ void Wall::setArena(IntRect arena)
 
 void Wall::spawn()
 {
-	// Spawn at a random location
-	int x = m_Arena.left + (rand() % m_Arena.width - 50);
-	int y = m_Arena.top + (rand() % m_Arena.height -50);
+	// Calculate the center of the arena
+	int centerX = m_Arena.left + m_Arena.width / 2;
+	int centerY = m_Arena.top + m_Arena.height / 2;
+
+	// Ensure walls do not spawn in center (where player spawns)
+	int centerRangeX = m_Arena.width / 8;
+	int centerRangeY = m_Arena.height / 8;
+
+	// Spawn walls in randomly outside the center range
+	int x, y;
+	do {
+		x = m_Arena.left + (rand() % m_Arena.width - 50);
+		y = m_Arena.top + (rand() % m_Arena.height - 50);
+	} while (abs(x - centerX) < centerRangeX && abs(y - centerY) < centerRangeY);
 
 	m_Spawned = true;
 
@@ -43,6 +54,11 @@ Sprite Wall::getSprite()
 bool Wall::isSpawned()
 {
 	return m_Spawned;
+}
+
+FloatRect Wall::getCollider() const
+{
+	return m_Sprite.getGlobalBounds();
 }
 
 void Wall::update(float elapsedTime)
