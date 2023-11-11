@@ -46,6 +46,7 @@ void
 Bee::update(Time const& dt)
 {
     // TODO Update the current state
+    currentState->update(dt.asSeconds());
 
     if (velocity.x == 0 && velocity.y == 0) { return; }
 

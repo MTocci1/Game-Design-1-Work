@@ -84,7 +84,19 @@ Bee::State* Bee::orbitState::handleEvent(TriggerEvent const& ev)
     return nullptr;
 }
 
-void Bee::orbitState::update(float dt) {}
+void Bee::orbitState::update(float dt) 
+{
+    float rotationSpeed = 1.5f;
+    float angle = rotationSpeed * dt;
+    Vector2f currentPosition = controlledBee.sprite.getPosition() - controlledBee.center;
+
+    // Rotate the current position
+    float newX = currentPosition.x * cos(angle) - currentPosition.y * sin(angle);
+    float newY = currentPosition.x * sin(angle) + currentPosition.y * cos(angle);
+
+    // Set the new position relative to the center
+    controlledBee.sprite.setPosition(controlledBee.center + Vector2f(newX, newY));
+}
 
 //Wander State
 Bee::wanderState::wanderState(Bee& bee) : Bee::State(bee) {}
@@ -118,7 +130,34 @@ Bee::State* Bee::wanderState::handleEvent(TriggerEvent const& ev)
     return nullptr;
 }
 
-void Bee::wanderState::update(float dt) {}
+void Bee::wanderState::update(float dt) 
+{
+        // Check if the bee should change directions
+        if (coinflip()) {
+            // Generate random values for the x and y components of the velocity
+            float randomVeloX = random();
+            float randomVeloY = random();
+            if (randomVeloX >= .5) {
+                controlledBee.velocity.x = 1.0;
+            }
+            else {
+                controlledBee.velocity.x = -1.0;
+            }
+
+            if (randomVeloY >= .5) {
+                controlledBee.velocity.y = 1.0;
+            }
+            else {
+                controlledBee.velocity.y = -1.0;
+            }
+        }
+
+    // Update the position based on the velocity
+    controlledBee.sprite.setPosition(
+        controlledBee.sprite.getPosition().x + (dt * controlledBee.speed * controlledBee.velocity.x),
+        controlledBee.sprite.getPosition().y + (dt * controlledBee.speed * controlledBee.velocity.y)
+    );
+}
 
 /* Auxiliary functions */
 
