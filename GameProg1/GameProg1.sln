@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Thomas Was Late", "Thomas W
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StateMachine", "StateMachine\StateMachine.vcxproj", "{3979B875-ED90-40EC-BCE6-3E85141A4C9D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tilemap", "tilemap\tilemap.vcxproj", "{4D91C7F1-D9FE-4BD2-B1AD-5DBE0BFBFE6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -111,6 +113,14 @@ Global
 		{3979B875-ED90-40EC-BCE6-3E85141A4C9D}.Release|x64.Build.0 = Release|x64
 		{3979B875-ED90-40EC-BCE6-3E85141A4C9D}.Release|x86.ActiveCfg = Release|Win32
 		{3979B875-ED90-40EC-BCE6-3E85141A4C9D}.Release|x86.Build.0 = Release|Win32
+		{4D91C7F1-D9FE-4BD2-B1AD-5DBE0BFBFE6D}.Debug|x64.ActiveCfg = Debug|x64
+		{4D91C7F1-D9FE-4BD2-B1AD-5DBE0BFBFE6D}.Debug|x64.Build.0 = Debug|x64
+		{4D91C7F1-D9FE-4BD2-B1AD-5DBE0BFBFE6D}.Debug|x86.ActiveCfg = Debug|Win32
+		{4D91C7F1-D9FE-4BD2-B1AD-5DBE0BFBFE6D}.Debug|x86.Build.0 = Debug|Win32
+		{4D91C7F1-D9FE-4BD2-B1AD-5DBE0BFBFE6D}.Release|x64.ActiveCfg = Release|x64
+		{4D91C7F1-D9FE-4BD2-B1AD-5DBE0BFBFE6D}.Release|x64.Build.0 = Release|x64
+		{4D91C7F1-D9FE-4BD2-B1AD-5DBE0BFBFE6D}.Release|x86.ActiveCfg = Release|Win32
+		{4D91C7F1-D9FE-4BD2-B1AD-5DBE0BFBFE6D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
