@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+
 using namespace sf;
+
 class PlayableCharacter
 {
 protected:
@@ -74,5 +76,8 @@ public:
 
 	// We will call this function once every frame
 	void update(float elapsedTime);
+
+	// Has the player walked on an ice block
+	void isOnSand(bool onSand);
 
 };// End of the class

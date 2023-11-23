@@ -90,6 +90,33 @@ bool Engine::detectCollisions(PlayableCharacter& character)
 				}
 			}
 
+			// Is character colliding with an ice block
+			if (m_ArrayLevel[y][x] == 5)
+			{
+				if (character.getRight().intersects(block))
+				{
+					character.stopRight(block.left);
+				}
+				else if (character.getLeft().intersects(block))
+				{
+					character.stopLeft(block.left);
+				}
+				if (character.getFeet().intersects(block))
+				{
+					character.isOnSand(true);
+					character.stopFalling(block.top);
+					character.stopJump();
+				}
+				else if (character.getHead().intersects(block))
+				{
+					character.stopJump();
+				}
+				else
+				{
+					character.isOnSand(false);
+				}
+			}
+
 			// More collision detection here once we have 
 			// learned about particle effects
 			// Have the characters' feet touched fire or water?

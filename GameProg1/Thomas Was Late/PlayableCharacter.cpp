@@ -144,3 +144,15 @@ void PlayableCharacter::stopJump()
 	m_IsJumping = false;
 	m_IsFalling = true;
 }
+
+void PlayableCharacter::isOnSand(bool onSand)
+{
+	if (onSand)
+	{
+		m_Speed = -200;
+	}
+	else
+	{
+		m_Speed = 400;
+	}
+}

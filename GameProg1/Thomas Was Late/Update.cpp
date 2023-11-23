@@ -19,6 +19,9 @@ void Engine::update(float dtAsSeconds)
 		// Update Bob
 		m_Bob.update(dtAsSeconds);
 
+		// Update Rob
+		m_Rob.update(dtAsSeconds);
+
 		// Detect collisions and see if characters 
 		// have reached the goal tile
 		// The second part of the if condition is only executed

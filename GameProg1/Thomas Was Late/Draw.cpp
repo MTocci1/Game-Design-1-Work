@@ -28,6 +28,9 @@ void Engine::draw()
 		// Draw bob
 		m_Window.draw(m_Bob.getSprite());
 
+		// Draw rob
+		m_Window.draw(m_Rob.getSprite());
+
 		// Draw the particle system
 		if (m_PS.running())
 		{
@@ -52,6 +55,9 @@ void Engine::draw()
 
 		// Draw bob
 		m_Window.draw(m_Bob.getSprite());
+
+		// Draw rob
+		m_Window.draw(m_Rob.getSprite());
 
 		// Draw thomas
 		m_Window.draw(m_Thomas.getSprite());
@@ -80,6 +86,9 @@ void Engine::draw()
 
 		// Draw bob
 		m_Window.draw(m_Bob.getSprite());
+
+		// Draw rob
+		m_Window.draw(m_Rob.getSprite());
 
 		// Draw the particle system
 		if (m_PS.running())

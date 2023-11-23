@@ -40,4 +40,10 @@ void Engine::input()
 	{
 		m_SM.playJump();
 	}
+
+	// Handle input specific to Rob
+	if (m_Rob.handleInput())
+	{
+		m_SM.playJump();
+	}
 }

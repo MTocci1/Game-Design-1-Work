@@ -116,6 +116,7 @@ int** LevelManager::nextLevel(VertexArray& rVaLevel)
 			rVaLevel[currentVertex + 3].position =
 				Vector2f((x * TILE_SIZE),
 					(y * TILE_SIZE) + TILE_SIZE);
+
 			// Which tile from the sprite sheet should we use
 			int verticalOffset = arrayLevel[y][x] * TILE_SIZE;
 			rVaLevel[currentVertex + 0].texCoords =
@@ -126,6 +127,7 @@ int** LevelManager::nextLevel(VertexArray& rVaLevel)
 				Vector2f(TILE_SIZE, TILE_SIZE + verticalOffset);
 			rVaLevel[currentVertex + 3].texCoords =
 				Vector2f(0, TILE_SIZE + verticalOffset);
+
 			// Position ready for the next four vertices
 			currentVertex = currentVertex + VERTS_IN_QUAD;
 		}

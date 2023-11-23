@@ -21,9 +21,23 @@ void Engine::loadLevel()
 	// How long is this new time limit
 	m_TimeRemaining = m_LM.getTimeLimit();
 
-	// Spawn Thomas and Bob
-	m_Thomas.spawn(m_LM.getStartPosition(), GRAVITY);
-	m_Bob.spawn(m_LM.getStartPosition(), GRAVITY);
+	if (m_LM.getCurrentLevel() == 1)
+	{
+		// Spawn Thomas and Bob
+		m_Thomas.spawn(m_LM.getStartPosition(), GRAVITY);
+		m_Bob.spawn(m_LM.getStartPosition(), GRAVITY);
+	}
+	if (m_LM.getCurrentLevel() == 2)
+	{
+		// Spawn Thomas and Bob
+		m_Rob.spawn(m_LM.getStartPosition(), GRAVITY);
+		m_Bob.spawn(m_LM.getStartPosition(), GRAVITY);
+	}
+	else {
+		m_Thomas.spawn(m_LM.getStartPosition(), GRAVITY);
+		m_Bob.spawn(m_LM.getStartPosition(), GRAVITY);
+	}
+
 
 	// Make sure this code isn't run again
 	m_NewLevelRequired = false;
