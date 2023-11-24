@@ -10,10 +10,11 @@ Rob::Rob()
 	m_JumpDuration = .25;
 }
 
+// A virtual function
 bool Rob::handleInput()
 {
 	m_JustJumped = false;
-	if (Keyboard::isKeyPressed(Keyboard::Up))
+	if (Keyboard::isKeyPressed(Keyboard::W))
 	{
 		// Start a jump if not already jumping
 		// but only if standing on a block (not falling)
@@ -29,7 +30,7 @@ bool Rob::handleInput()
 		m_IsJumping = false;
 		m_IsFalling = true;
 	}
-	if (Keyboard::isKeyPressed(Keyboard::Left))
+	if (Keyboard::isKeyPressed(Keyboard::A))
 	{
 		m_LeftPressed = true;
 	}
@@ -37,13 +38,18 @@ bool Rob::handleInput()
 	{
 		m_LeftPressed = false;
 	}
-	if (Keyboard::isKeyPressed(Keyboard::Right))
+	if (Keyboard::isKeyPressed(Keyboard::D))
 	{
-		m_RightPressed = true;;
+		m_RightPressed = true;
 	}
 	else
 	{
 		m_RightPressed = false;
 	}
 	return m_JustJumped;
+}
+
+void Rob::isOnSand(bool onSand)
+{
+	m_Speed = 400;
 }

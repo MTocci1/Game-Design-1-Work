@@ -23,13 +23,17 @@ void Engine::draw()
 		m_Window.draw(m_VALevel, &m_TextureTiles);
 
 		// Draw thomas
-		m_Window.draw(m_Thomas.getSprite());
+		if (m_Thomas.isSpawned()) {
+			m_Window.draw(m_Thomas.getSprite());
+		}
 
 		// Draw bob
 		m_Window.draw(m_Bob.getSprite());
 
 		// Draw rob
-		m_Window.draw(m_Rob.getSprite());
+		if (m_Rob.isSpawned()) {
+			m_Window.draw(m_Rob.getSprite());
+		}
 
 		// Draw the particle system
 		if (m_PS.running())
@@ -57,10 +61,14 @@ void Engine::draw()
 		m_Window.draw(m_Bob.getSprite());
 
 		// Draw rob
-		m_Window.draw(m_Rob.getSprite());
+		if (m_Rob.isSpawned()) {
+			m_Window.draw(m_Rob.getSprite());
+		}
 
 		// Draw thomas
-		m_Window.draw(m_Thomas.getSprite());
+		if (m_Thomas.isSpawned()) {
+			m_Window.draw(m_Thomas.getSprite());
+		}
 
 		// Draw the particle system
 		if (m_PS.running())
@@ -82,13 +90,17 @@ void Engine::draw()
 		m_Window.draw(m_VALevel, &m_TextureTiles);
 
 		// Draw thomas
-		m_Window.draw(m_Thomas.getSprite());
+		if (m_Thomas.isSpawned()) {
+			m_Window.draw(m_Thomas.getSprite());
+		}
 
 		// Draw bob
 		m_Window.draw(m_Bob.getSprite());
 
 		// Draw rob
-		m_Window.draw(m_Rob.getSprite());
+		if (m_Rob.isSpawned()) {
+			m_Window.draw(m_Rob.getSprite());
+		}
 
 		// Draw the particle system
 		if (m_PS.running())

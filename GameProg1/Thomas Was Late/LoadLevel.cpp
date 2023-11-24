@@ -25,19 +25,55 @@ void Engine::loadLevel()
 	{
 		// Spawn Thomas and Bob
 		m_Thomas.spawn(m_LM.getStartPosition(), GRAVITY);
+		m_Thomas.setSpawn(true);
 		m_Bob.spawn(m_LM.getStartPosition(), GRAVITY);
+		m_Bob.setSpawn(true);
+
+		// Make sure rob does not spawn
+		m_Rob.setSpawn(false);
 	}
 	if (m_LM.getCurrentLevel() == 2)
 	{
 		// Spawn Thomas and Bob
 		m_Rob.spawn(m_LM.getStartPosition(), GRAVITY);
+		m_Rob.setSpawn(true);
 		m_Bob.spawn(m_LM.getStartPosition(), GRAVITY);
-	}
-	else {
-		m_Thomas.spawn(m_LM.getStartPosition(), GRAVITY);
-		m_Bob.spawn(m_LM.getStartPosition(), GRAVITY);
-	}
+		m_Bob.setSpawn(true);
 
+		m_Thomas.setSpawn(false);
+	}
+	if (m_LM.getCurrentLevel() == 3)
+	{
+		// Spawn Thomas and Bob
+		m_Thomas.spawn(m_LM.getStartPosition(), GRAVITY);
+		m_Thomas.setSpawn(true);
+		m_Bob.spawn(m_LM.getStartPosition(), GRAVITY);
+		m_Bob.setSpawn(true);
+
+		// Make sure rob does not spawn
+		m_Rob.setSpawn(false);
+	}
+	if (m_LM.getCurrentLevel() == 4)
+	{
+		// Spawn Thomas and Bob
+		m_Thomas.spawn(m_LM.getStartPosition(), GRAVITY);
+		m_Thomas.setSpawn(true);
+		m_Bob.spawn(m_LM.getStartPosition(), GRAVITY);
+		m_Bob.setSpawn(true);
+
+		// Make sure rob does not spawn
+		m_Rob.setSpawn(false);
+	}
+	if (m_LM.getCurrentLevel() == 5)
+	{
+		// Spawn Thomas and Bob
+		m_Rob.spawn(m_LM.getStartPosition(), GRAVITY);
+		m_Rob.setSpawn(true);
+		m_Bob.spawn(m_LM.getStartPosition(), GRAVITY);
+		m_Bob.setSpawn(true);
+
+		m_Thomas.setSpawn(false);
+	}
 
 	// Make sure this code isn't run again
 	m_NewLevelRequired = false;

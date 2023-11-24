@@ -25,13 +25,13 @@ protected:
 
 	// Has the player just initiated a jump
 	bool m_JustJumped = false;
+
+	// How fast is the character
+	float m_Speed = 400;
 	
 private:
 	// What is the gravity
 	float m_Gravity;
-
-	// How fast is the character
-	float m_Speed = 400;
 
 	// Where is the player
 	Vector2f m_Position;
@@ -44,6 +44,8 @@ private:
 
 	// And a texture
 	Texture m_Texture;
+
+	bool m_Spawned = false;
 
 public:
 	void spawn(Vector2f startPosition, float gravity);
@@ -78,6 +80,10 @@ public:
 	void update(float elapsedTime);
 
 	// Has the player walked on an ice block
-	void isOnSand(bool onSand);
+	void virtual isOnSand(bool onSand) = 0;
+
+	bool isSpawned();
+
+	void setSpawn(bool spawn);
 
 };// End of the class

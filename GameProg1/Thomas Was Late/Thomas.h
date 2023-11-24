@@ -8,4 +8,7 @@ public:
 
 	// The overridden input handler for Thomas
 	bool virtual handleInput();
+
+	void virtual isOnSand(bool onSand);
+
 };

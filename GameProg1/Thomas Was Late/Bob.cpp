@@ -47,3 +47,15 @@ bool Bob::handleInput()
 	}
 	return m_JustJumped;
 }
+
+void Bob::isOnSand(bool onSand)
+{
+	if (onSand)
+	{
+		m_Speed = -200;
+	}
+	else
+	{
+		m_Speed = 400;
+	}
+}

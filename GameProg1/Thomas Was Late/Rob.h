@@ -9,4 +9,7 @@ public:
 
 	// The overriden input handler for Rob
 	bool virtual handleInput();
+
+	void virtual isOnSand(bool onSand);
+
 };

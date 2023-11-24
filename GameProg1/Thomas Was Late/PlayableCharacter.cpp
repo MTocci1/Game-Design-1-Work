@@ -145,14 +145,12 @@ void PlayableCharacter::stopJump()
 	m_IsFalling = true;
 }
 
-void PlayableCharacter::isOnSand(bool onSand)
+bool PlayableCharacter::isSpawned()
 {
-	if (onSand)
-	{
-		m_Speed = -200;
-	}
-	else
-	{
-		m_Speed = 400;
-	}
+	return m_Spawned;
+}
+
+void PlayableCharacter::setSpawn(bool spawn)
+{
+	m_Spawned = spawn;
 }
