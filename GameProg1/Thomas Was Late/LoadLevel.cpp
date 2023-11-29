@@ -56,17 +56,6 @@ void Engine::loadLevel()
 	if (m_LM.getCurrentLevel() == 4)
 	{
 		// Spawn Thomas and Bob
-		m_Thomas.spawn(m_LM.getStartPosition(), GRAVITY);
-		m_Thomas.setSpawn(true);
-		m_Bob.spawn(m_LM.getStartPosition(), GRAVITY);
-		m_Bob.setSpawn(true);
-
-		// Make sure rob does not spawn
-		m_Rob.setSpawn(false);
-	}
-	if (m_LM.getCurrentLevel() == 5)
-	{
-		// Spawn Thomas and Bob
 		m_Rob.spawn(m_LM.getStartPosition(), GRAVITY);
 		m_Rob.setSpawn(true);
 		m_Bob.spawn(m_LM.getStartPosition(), GRAVITY);

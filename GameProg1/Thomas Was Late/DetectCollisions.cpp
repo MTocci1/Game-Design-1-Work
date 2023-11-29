@@ -103,9 +103,12 @@ bool Engine::detectCollisions(PlayableCharacter& character)
 				}
 				if (character.getFeet().intersects(block))
 				{
-					character.isOnSand(true);
+					bool cantJump = character.isOnSand(true);
 					character.stopFalling(block.top);
-					character.stopJump();
+					if (cantJump) 
+					{
+						character.stopJump();
+					}
 				}
 				else if (character.getHead().intersects(block))
 				{

@@ -1,4 +1,6 @@
 #include "PlayableCharacter.h"
+#include "PlayableCharacterStates.h"
+
 
 void PlayableCharacter::spawn(Vector2f startPosition, float gravity)
 {
@@ -24,30 +26,26 @@ void PlayableCharacter::update(float elapsedTime)
 		m_Position.x -= m_Speed * elapsedTime;
 	}
 
-	// Handle Jumping
-	if (m_IsJumping)
-	{
-		// Update how long the jump has been going
-		m_TimeThisJump += elapsedTime;
 
-		// Is the jump going upwards
-		if (m_TimeThisJump < m_JumpDuration)
-		{
-			// Move up at twice gravity
-			m_Position.y -= m_Gravity * 2 * elapsedTime;
+	State* nextState = currentState->handleEvent();
+
+	if (nextState != currentState) {
+		// Exit the current state if it's not nullptr
+		if (currentState != nullptr) {
+			currentState->exit();
 		}
-		else
-		{
-			m_IsJumping = false;
-			m_IsFalling = true;
+
+		// Update the current state and enter the new state if it's not nullptr
+		delete currentState;
+
+		currentState = nextState;
+		if (currentState != nullptr) {
+			currentState->enter();
 		}
 	}
 
-	// Apply gravity
-	if (m_IsFalling)
-	{
-		m_Position.y += m_Gravity * elapsedTime;
-	}
+	currentState->update(elapsedTime);
+
 
 	// Update the rect for all body parts
 	FloatRect r = getPosition();

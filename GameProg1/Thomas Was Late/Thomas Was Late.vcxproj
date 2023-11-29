@@ -144,6 +144,7 @@
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="PlayableCharacter.cpp" />
+    <ClCompile Include="PlayableCharacterStates.cpp" />
     <ClCompile Include="PopulateEmmitters.cpp" />
     <ClCompile Include="Rob.cpp" />
     <ClCompile Include="SoundManager.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="PlayableCharacter.h" />
+    <ClInclude Include="PlayableCharacterStates.h" />
     <ClInclude Include="Rob.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Subject.h" />

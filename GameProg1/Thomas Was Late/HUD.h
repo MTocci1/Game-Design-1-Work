@@ -1,15 +1,19 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Observer.h"
+#include "Event.h"
 
 using namespace sf;
 
-class Hud
+class Hud: public Observer
 {
 private:
 	Font m_Font;
 	Text m_StartText;
 	Text m_TimeText;
 	Text m_LevelText;
+
+	int levelNumber;
 public:
 	Hud();
 
@@ -22,4 +26,6 @@ public:
 	void setLevel(String text);
 
 	void setTime(String text);
+
+	void onNotify(::Event const& ev);
 };

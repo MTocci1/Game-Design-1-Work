@@ -10,5 +10,5 @@ public:
 	// The overriden input handler for Bob
 	bool virtual handleInput();
 
-	void virtual isOnSand(bool onSand);
+	bool virtual isOnSand(bool onSand);
 };

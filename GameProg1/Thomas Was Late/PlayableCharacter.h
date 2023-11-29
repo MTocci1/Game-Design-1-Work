@@ -5,6 +5,7 @@ using namespace sf;
 
 class PlayableCharacter
 {
+	struct State;
 protected:
 	// Of course we will need a sprite
 	Sprite m_Sprite;
@@ -28,6 +29,12 @@ protected:
 
 	// How fast is the character
 	float m_Speed = 400;
+
+	State* currentState;
+
+	struct jumpingState;
+	struct fallingState;
+	struct stillState;
 	
 private:
 	// What is the gravity
@@ -80,7 +87,7 @@ public:
 	void update(float elapsedTime);
 
 	// Has the player walked on an ice block
-	void virtual isOnSand(bool onSand) = 0;
+	bool virtual isOnSand(bool onSand) = 0;
 
 	bool isSpawned();
 

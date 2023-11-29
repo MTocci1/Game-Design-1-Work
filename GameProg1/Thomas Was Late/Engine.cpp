@@ -52,6 +52,9 @@ Engine::Engine()
 
 	// Initialize the particle system
 	m_PS.init(1000);
+
+	// Add hudCounter as an observer for the planet subject
+	m_LM.addObserver(m_Hud);
 }
 
 void Engine::run()

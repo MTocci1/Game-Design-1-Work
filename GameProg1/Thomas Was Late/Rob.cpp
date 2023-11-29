@@ -1,5 +1,6 @@
 #include "Rob.h"
 #include "TextureHolder.h"
+#include "PlayableCharacterStates.h"
 
 Rob::Rob()
 {
@@ -8,6 +9,8 @@ Rob::Rob()
 		"graphics/rob.png"));
 
 	m_JumpDuration = .25;
+
+	currentState = new stillState(*this);
 }
 
 // A virtual function
@@ -49,7 +52,8 @@ bool Rob::handleInput()
 	return m_JustJumped;
 }
 
-void Rob::isOnSand(bool onSand)
+bool Rob::isOnSand(bool onSand)
 {
 	m_Speed = 400;
+	return false;
 }

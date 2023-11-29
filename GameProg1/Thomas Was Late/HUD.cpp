@@ -1,4 +1,7 @@
 #include "HUD.h"
+#include <sstream>
+
+using namespace std;
 
 Hud::Hud()
 {
@@ -37,6 +40,8 @@ Hud::Hud()
 	m_LevelText.setFillColor(Color::White);
 	m_LevelText.setPosition(25, 0);
 	m_LevelText.setString("1");
+
+	levelNumber = 0;
 }
 
 Text Hud::getMessage()
@@ -62,4 +67,18 @@ void Hud::setLevel(String text)
 void Hud::setTime(String text)
 {
 	m_TimeText.setString(text);
+}
+
+void Hud::onNotify(::Event const& ev) {
+	if (ev.name == "New Level") {
+
+		// Increment the level number
+		levelNumber++;
+
+		stringstream ssLevel;
+
+		// Update the level text
+		ssLevel << "Level:" << levelNumber;
+		m_LevelText.setString(ssLevel.str());
+	}
 }

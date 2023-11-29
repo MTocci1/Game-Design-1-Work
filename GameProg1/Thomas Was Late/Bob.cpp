@@ -1,5 +1,6 @@
 #include "Bob.h"
 #include "TextureHolder.h"
+#include "PlayableCharacterStates.h"
 
 Bob::Bob()
 {
@@ -8,6 +9,8 @@ Bob::Bob()
 		"graphics/bob.png"));
 
 	m_JumpDuration = .25;
+
+	currentState = new stillState(*this);
 }
 
 bool Bob::handleInput()
@@ -48,14 +51,16 @@ bool Bob::handleInput()
 	return m_JustJumped;
 }
 
-void Bob::isOnSand(bool onSand)
+bool Bob::isOnSand(bool onSand)
 {
 	if (onSand)
 	{
 		m_Speed = -200;
+		return true;
 	}
 	else
 	{
 		m_Speed = 400;
+		return false;
 	}
 }

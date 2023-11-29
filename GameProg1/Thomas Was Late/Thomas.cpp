@@ -1,5 +1,6 @@
 #include "Thomas.h"
 #include "TextureHolder.h"
+#include "PlayableCharacterStates.h"
 
 Thomas::Thomas()
 {
@@ -8,6 +9,8 @@ Thomas::Thomas()
 		"graphics/thomas.png"));
 
 	m_JumpDuration = .45;
+
+	currentState = new stillState(*this);
 }
 
 // A virtual function
@@ -49,14 +52,16 @@ bool Thomas::handleInput()
 	return m_JustJumped;
 }
 
-void Thomas::isOnSand(bool onSand)
+bool Thomas::isOnSand(bool onSand)
 {
 	if (onSand)
 	{
 		m_Speed = -200;
+		return true;
 	}
 	else
 	{
 		m_Speed = 400;
+		return false;
 	}
 }

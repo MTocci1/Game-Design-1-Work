@@ -1,10 +1,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Subject.h"
+#include "Event.h"
 
 using namespace sf;
 using namespace std;
 
-class LevelManager
+class LevelManager : public Subject
 {
 private:
 	Vector2i m_LevelSize;
