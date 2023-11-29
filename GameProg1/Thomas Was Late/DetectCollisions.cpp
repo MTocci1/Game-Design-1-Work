@@ -36,6 +36,8 @@ bool Engine::detectCollisions(PlayableCharacter& character)
 
 	if (!character.getPosition().intersects(level))
 	{
+		m_SM.playFallOffMap();
+
 		// respawn the character
 		character.spawn(m_LM.getStartPosition(), GRAVITY);
 	}

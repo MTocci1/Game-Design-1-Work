@@ -31,6 +31,8 @@ void Engine::loadLevel()
 
 		// Make sure rob does not spawn
 		m_Rob.setSpawn(false);
+
+		m_SM.playLevel1();
 	}
 	if (m_LM.getCurrentLevel() == 2)
 	{
@@ -41,6 +43,8 @@ void Engine::loadLevel()
 		m_Bob.setSpawn(true);
 
 		m_Thomas.setSpawn(false);
+
+		m_SM.playLevel2();
 	}
 	if (m_LM.getCurrentLevel() == 3)
 	{
@@ -52,6 +56,8 @@ void Engine::loadLevel()
 
 		// Make sure rob does not spawn
 		m_Rob.setSpawn(false);
+
+		m_SM.playLevel3();
 	}
 	if (m_LM.getCurrentLevel() == 4)
 	{
@@ -62,6 +68,8 @@ void Engine::loadLevel()
 		m_Bob.setSpawn(true);
 
 		m_Thomas.setSpawn(false);
+
+		m_SM.playLevel4();
 	}
 
 	// Make sure this code isn't run again

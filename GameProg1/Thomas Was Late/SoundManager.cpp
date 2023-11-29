@@ -10,6 +10,13 @@ SoundManager::SoundManager()
 	m_FallInWaterBuffer.loadFromFile("sound/fallinwater.wav");
 	m_JumpBuffer.loadFromFile("sound/jump.wav");
 	m_ReachGoalBuffer.loadFromFile("sound/reachgoal.wav");
+	m_level1Buffer.loadFromFile("sound/level1.mp3");
+	m_level2Buffer.loadFromFile("sound/level2.mp3");
+	m_level3Buffer.loadFromFile("sound/level3.mp3");
+	m_level4Buffer.loadFromFile("sound/level4.mp3");
+	m_fireNarratorBuffer.loadFromFile("sound/fire-narrator.mp3");;
+	m_waterNarratorBuffer.loadFromFile("sound/water-narrator.mp3");;
+	m_fallNarratorBuffer.loadFromFile("sound/fall-narrator.mp3");;
 
 	// Associate the sounds with the buffers
 	m_Fire1Sound.setBuffer(m_FireBuffer);
@@ -19,6 +26,13 @@ SoundManager::SoundManager()
 	m_FallInWaterSound.setBuffer(m_FallInWaterBuffer);
 	m_JumpSound.setBuffer(m_JumpBuffer);
 	m_ReachGoalSound.setBuffer(m_ReachGoalBuffer);
+	m_level1Sound.setBuffer(m_level1Buffer);;
+	m_level2Sound.setBuffer(m_level2Buffer);;
+	m_level3Sound.setBuffer(m_level3Buffer);;
+	m_level4Sound.setBuffer(m_level4Buffer);;
+	m_fireNarratorSound.setBuffer(m_fireNarratorBuffer);;
+	m_waterNarratorSound.setBuffer(m_waterNarratorBuffer);;
+	m_fallNarratorSound.setBuffer(m_fallNarratorBuffer);;
 
 	// When the player is 50 pixels away sound is full volume
 	float minDistance = 150;
@@ -41,6 +55,10 @@ SoundManager::SoundManager()
 	m_Fire1Sound.setLoop(true);
 	m_Fire2Sound.setLoop(true);
 	m_Fire3Sound.setLoop(true);
+
+	m_JumpSound.setVolume(25);
+	m_FallInFireSound.setVolume(25);
+	m_FallInWaterSound.setVolume(25);
 }
 
 void SoundManager::playFire(
@@ -97,12 +115,14 @@ void SoundManager::playFallInFire()
 {
 	m_FallInFireSound.setRelativeToListener(true);
 	m_FallInFireSound.play();
+	m_fireNarratorSound.play();
 }
 
 void SoundManager::playFallInWater()
 {
 	m_FallInWaterSound.setRelativeToListener(true);
 	m_FallInWaterSound.play();
+	m_waterNarratorSound.play();
 }
 
 void SoundManager::playJump()
@@ -115,4 +135,29 @@ void SoundManager::playReachGoal()
 {
 	m_ReachGoalSound.setRelativeToListener(true);
 	m_ReachGoalSound.play();
+}
+
+void SoundManager::playLevel1()
+{
+	m_level1Sound.play();
+}
+
+void SoundManager::playLevel2()
+{
+	m_level2Sound.play();
+}
+
+void SoundManager::playLevel3()
+{
+	m_level3Sound.play();
+}
+
+void SoundManager::playLevel4()
+{
+	m_level4Sound.play();
+}
+
+void SoundManager::playFallOffMap()
+{
+	m_fallNarratorSound.play();
 }
